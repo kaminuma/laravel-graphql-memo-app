@@ -1,0 +1,188 @@
+import React, { useState, FormEvent, useEffect } from 'react';
+import { useMutation } from '@apollo/client';
+import { CREATE_TODO, UPDATE_TODO } from '../../services/mutations';
+import { GET_TODOS } from '../../services/queries';
+import {
+  Card,
+  Box,
+  Stack,
+  Typography,
+  TextField,
+  Button,
+  Checkbox,
+  CircularProgress,
+  Alert,
+  FormControlLabel,
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+
+// GraphQLのmutation型（必要に応じて拡張）
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type CreateTodoVars = {
+  title: string;
+  description: string;
+  user_id: string;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type UpdateTodoVars = {
+  id: string;
+  title?: string;
+  description?: string;
+  completed?: boolean;
+};
+
+type Todo = {
+  id: string;
+  title: string;
+  description?: string;
+  completed: boolean;
+  user_id: number;
+};
+
+type TodoFormProps = {
+  mode: 'create' | 'edit';
+  initialValues?: Partial<Todo>;
+  onSuccess?: () => void;
+  onCancel?: () => void;
+};
+
+const TodoForm: React.FC<TodoFormProps> = ({ mode, initialValues, onSuccess, onCancel }) => {
+  const [title, setTitle] = useState<string>(initialValues?.title || '');
+  const [description, setDescription] = useState<string>(initialValues?.description || '');
+  const [user_id] = useState<string>('1'); // テストユーザーのID
+  const [completed, setCompleted] = useState<boolean>(initialValues?.completed ?? false);
+  const [error, setError] = useState<string | null>(null);
+
+  const [createTodo, { loading: creating }] = useMutation(CREATE_TODO, {
+    refetchQueries: [{ query: GET_TODOS }],
+  });
+  const [updateTodo, { loading: updating }] = useMutation(UPDATE_TODO, {
+    refetchQueries: [{ query: GET_TODOS }],
+  });
+
+  useEffect(() => {
+    if (mode === 'edit' && initialValues) {
+      setTitle(initialValues.title || '');
+      setDescription(initialValues.description || '');
+      setCompleted(initialValues.completed ?? false);
+    }
+  }, [mode, initialValues]);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null);
+    if (!title.trim()) {
+      setError('タイトルを入力してください');
+      return;
+    }
+    try {
+      if (mode === 'create') {
+        await createTodo({
+          variables: {
+            title: title.trim(),
+            description: description.trim(),
+            user_id,
+          },
+        });
+        setTitle('');
+        setDescription('');
+      } else if (mode === 'edit' && initialValues?.id) {
+        await updateTodo({
+          variables: {
+            id: initialValues.id,
+            title: title.trim(),
+            description: description.trim(),
+            completed,
+          },
+        });
+      }
+      if (onSuccess) onSuccess();
+    } catch (err) {
+      setError('TODOの登録/更新に失敗しました');
+    }
+  };
+
+  return (
+    <Card elevation={3} sx={{ maxWidth: 600, mx: 'auto', p: { xs: 2, sm: 4 }, borderRadius: 4, background: 'linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%)' }}>
+      <Stack spacing={2} alignItems="center">
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 56, height: 56, borderRadius: '50%', background: 'linear-gradient(135deg, #6366f1 0%, #818cf8 100%)', mb: 1 }}>
+          {mode === 'create' ? <AddIcon sx={{ color: '#fff', fontSize: 28 }} /> : <EditIcon sx={{ color: '#fff', fontSize: 28 }} />}
+        </Box>
+        <Typography variant="h5" fontWeight={900} sx={{ background: 'linear-gradient(135deg, #6366f1 0%, #818cf8 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', mb: 1 }}>
+          {mode === 'create' ? '新しいTODOを追加' : 'TODOを編集'}
+        </Typography>
+        <Typography color="text.secondary" fontWeight={500} mb={1}>
+          {mode === 'create' ? '素晴らしいアイデアを形にしましょう' : 'TODOの内容を編集できます'}
+        </Typography>
+        {error && <Alert severity="error" sx={{ width: '100%' }}>{error}</Alert>}
+        <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
+          <Stack spacing={2}>
+            <TextField
+              label="タイトル"
+              placeholder="例: 買い物に行く"
+              value={title}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+              required
+              fullWidth
+              size="medium"
+              variant="outlined"
+              InputLabelProps={{ style: { fontWeight: 700, color: '#6366f1' } }}
+            />
+            <TextField
+              label="説明"
+              placeholder="例: 牛乳、パン、卵を買う"
+              value={description}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
+              fullWidth
+              multiline
+              minRows={3}
+              maxRows={6}
+              size="medium"
+              variant="outlined"
+              InputLabelProps={{ style: { fontWeight: 700, color: '#6366f1' } }}
+            />
+            {mode === 'edit' && (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={completed}
+                    onChange={() => setCompleted(!completed)}
+                    color="success"
+                    sx={{ fontWeight: 700 }}
+                    inputProps={{ 'aria-label': '完了状態' }}
+                  />
+                }
+                label={completed ? '未完了にする' : '完了にする'}
+              />
+            )}
+            <Stack direction="row" spacing={2} justifyContent="flex-start" alignItems="center">
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                size="large"
+                startIcon={mode === 'create' ? <AddIcon /> : <EditIcon />}
+                disabled={creating || updating}
+                sx={{ fontWeight: 800, px: 4, borderRadius: 3, letterSpacing: '0.5px' }}
+              >
+                {creating || updating
+                  ? (mode === 'create' ? '登録中...' : '更新中...')
+                  : (mode === 'create' ? 'TODOを登録' : 'TODOを更新')}
+              </Button>
+              {onCancel && (
+                <Button type="button" variant="outlined" color="secondary" size="large" onClick={onCancel} sx={{ fontWeight: 700, borderRadius: 3 }}>
+                  キャンセル
+                </Button>
+              )}
+              {(creating || updating) && <CircularProgress size={28} color="primary" />}
+            </Stack>
+          </Stack>
+        </Box>
+      </Stack>
+    </Card>
+  );
+};
+
+export default TodoForm; 
