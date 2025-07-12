@@ -2,6 +2,7 @@ import React, { useState, FormEvent, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { CREATE_TODO, UPDATE_TODO } from '../../services/mutations';
 import { GET_TODOS } from '../../services/queries';
+import { useAuth } from '../../contexts/AuthContext';
 import {
   Card,
   Box,
@@ -16,22 +17,6 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-
-// GraphQLのmutation型（必要に応じて拡張）
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type CreateTodoVars = {
-  title: string;
-  description: string;
-  user_id: string;
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type UpdateTodoVars = {
-  id: string;
-  title?: string;
-  description?: string;
-  completed?: boolean;
-};
 
 type Todo = {
   id: string;
@@ -51,9 +36,9 @@ type TodoFormProps = {
 const TodoForm: React.FC<TodoFormProps> = ({ mode, initialValues, onSuccess, onCancel }) => {
   const [title, setTitle] = useState<string>(initialValues?.title || '');
   const [description, setDescription] = useState<string>(initialValues?.description || '');
-  const [user_id] = useState<string>('1'); // テストユーザーのID
   const [completed, setCompleted] = useState<boolean>(initialValues?.completed ?? false);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   const [createTodo, { loading: creating }] = useMutation(CREATE_TODO, {
     refetchQueries: [{ query: GET_TODOS }],
@@ -79,11 +64,15 @@ const TodoForm: React.FC<TodoFormProps> = ({ mode, initialValues, onSuccess, onC
     }
     try {
       if (mode === 'create') {
+        if (!user) {
+          setError('ログインが必要です');
+          return;
+        }
         await createTodo({
           variables: {
             title: title.trim(),
             description: description.trim(),
-            user_id,
+            user_id: user.id,
           },
         });
         setTitle('');

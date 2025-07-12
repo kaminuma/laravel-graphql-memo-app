@@ -55,7 +55,7 @@ services:
       - /app/node_modules
       - /app/.git
     environment:
-      - REACT_APP_API_URL=http://localhost:8000/graphql
+      - REACT_APP_API_URL=http://backend:8000/graphql
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
     depends_on:
