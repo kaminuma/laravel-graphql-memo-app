@@ -1,0 +1,16 @@
+# Cypress screenshots and downloads
+cypress/screenshots/
+cypress/downloads/
+
+# Cypress fixtures（必要に応じて）
+cypress/fixtures/
+
+# Build output
+build/
+
+# テスト用__tests__ディレクトリ（必要に応じて）
+src/components/*/__tests__/
+
+# その他よくある不要ファイル
+.DS_Store
+node_modules/ 
