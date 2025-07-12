@@ -13,7 +13,7 @@ return [
 
         // Any middleware for the graphql route group
         // This middleware will apply to all schemas
-        'middleware' => [],
+        'middleware' => ['web'],
 
         // Additional route group attributes
         //
@@ -77,11 +77,15 @@ return [
             'query' => [
                 App\GraphQL\Queries\TodosQuery::class,
                 App\GraphQL\Queries\UsersQuery::class,
+                App\GraphQL\Queries\MeQuery::class,
             ],
             'mutation' => [
                 App\GraphQL\Mutations\CreateTodoMutation::class,
                 App\GraphQL\Mutations\UpdateTodoMutation::class,
                 App\GraphQL\Mutations\DeleteTodoMutation::class,
+                App\GraphQL\Mutations\RegisterMutation::class,
+                App\GraphQL\Mutations\LoginMutation::class,
+                App\GraphQL\Mutations\LogoutMutation::class,
             ],
             // The types only available in this schema
             'types' => [
@@ -90,7 +94,7 @@ return [
             ],
 
             // Laravel HTTP middleware
-            'middleware' => null,
+            'middleware' => ['web'],
 
             // Which HTTP methods to support; must be given in UPPERCASE!
             'method' => ['GET', 'POST'],

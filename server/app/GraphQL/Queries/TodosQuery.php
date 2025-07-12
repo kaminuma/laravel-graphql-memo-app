@@ -9,6 +9,7 @@ use Closure;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Rebing\GraphQL\Support\Query;
+use Illuminate\Support\Facades\Auth;
 
 class TodosQuery extends Query
 {
@@ -40,11 +41,13 @@ class TodosQuery extends Query
 
     public function resolve($root, array $args, $context, ResolveInfo $resolveInfo, Closure $getSelectFields)
     {
-        $query = Todo::query();
-
-        if (isset($args['user_id'])) {
-            $query->where('user_id', (int) $args['user_id']);
+        $user = Auth::user();
+        
+        if (!$user) {
+            return [];
         }
+
+        $query = Todo::query()->where('user_id', $user->id);
 
         if (isset($args['completed'])) {
             $query->where('completed', $args['completed']);

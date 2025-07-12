@@ -1,9 +1,58 @@
-import React from 'react';
-import { Container, Grid, Paper, Box, Typography } from '@mui/material';
+import React, { useEffect } from 'react';
+import { Container, Grid, Paper, Box, Typography, Button, Alert } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import TodoList from '../components/TodoList/TodoList';
 import TodoForm from '../components/TodoForm/TodoForm';
+import { useAuth } from '../contexts/AuthContext';
 
 const TodoPage = () => {
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
+
+  // 未認証時にログインページにリダイレクト
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/login');
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          minHeight: '100vh',
+          background: 'linear-gradient(120deg, #f8fafc 0%, #e0e7ff 40%, #c7d2fe 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography variant="h6" color="text.secondary">
+          読み込み中...
+        </Typography>
+      </Box>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Box
+        sx={{
+          minHeight: '100vh',
+          background: 'linear-gradient(120deg, #f8fafc 0%, #e0e7ff 40%, #c7d2fe 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: 2,
+        }}
+      >
+        <Typography variant="h6" color="text.secondary">
+          リダイレクト中...
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
     <Box
       sx={{
@@ -37,6 +86,9 @@ const TodoPage = () => {
               <Box component="span" sx={{ fontWeight: 700, color: 'primary.main' }}>
                 モダンなTODOアプリケーション
               </Box>
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              ようこそ、{user.name}さん！
             </Typography>
           </Paper>
         </Box>

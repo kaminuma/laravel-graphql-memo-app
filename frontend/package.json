@@ -23,6 +23,13 @@
     "start": "CHOKIDAR_USEPOLLING=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:watch": "react-scripts test --watch",
+    "test:coverage": "react-scripts test --coverage",
+    "test:e2e": "cypress run",
+    "test:e2e:open": "cypress open",
+    "test:e2e:auth": "cypress run --spec 'cypress/e2e/auth/**/*.cy.js'",
+    "test:e2e:todo": "cypress run --spec 'cypress/e2e/todo/**/*.cy.js'",
+    "test:all": "npm run test && npm run test:e2e",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
