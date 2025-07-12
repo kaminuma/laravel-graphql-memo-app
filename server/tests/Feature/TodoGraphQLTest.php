@@ -14,6 +14,9 @@ class TodoGraphQLTest extends TestCase
     public function test_todo_crud_via_graphql()
     {
         $user = User::factory()->create();
+        
+        // ユーザーを認証
+        $this->actingAs($user);
 
         // 1. 作成
         $createMutation = [
