@@ -31,12 +31,18 @@
    docker-compose up -d
    ```
 
-3. **DBマイグレーション・シーディング（初回のみ）**
+
+3. **バックエンド依存インストール（初回のみ）**
+   ```bash
+   docker-compose exec backend composer install
+   ```
+
+4. **DBマイグレーション・シーディング（初回のみ）**
    ```bash
    docker-compose exec backend php artisan migrate --seed
    ```
 
-4. **フロントエンド依存インストール（初回のみ）**
+5. **フロントエンド依存インストール（初回のみ）**
    ```bash
    docker-compose exec frontend npm install
    ```
@@ -57,7 +63,14 @@
 - Password: `todo_password`
 - Database: `todo_app`
 
+
 ※ローカルMySQLと競合する場合は、ホスト側MySQLを一時停止してください。
+
+## バックエンド環境変数（.env）
+初回セットアップ時は、`server/.env.example` をコピーして `server/.env` を作成し、必要に応じて編集してください。
+```bash
+cp server/.env.example server/.env
+```
 
 ---
 
