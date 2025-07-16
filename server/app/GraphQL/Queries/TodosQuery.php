@@ -76,7 +76,9 @@ class TodosQuery extends Query
 
         // Filter by priority
         if (isset($args['priority'])) {
-            $query->where('priority', $args['priority']);
+            // GraphQLから来る大文字の値を小文字に変換
+            $priority = strtolower($args['priority']);
+            $query->where('priority', $priority);
         }
 
         // Filter by deadline status
@@ -98,18 +100,21 @@ class TodosQuery extends Query
             }
         }
 
-        // Apply sorting
+        // Apply sorting with robust validation
         $sortBy = $args['sort_by'] ?? 'created_at';
         $sortDirection = $args['sort_direction'] ?? 'desc';
 
-        // Validate sort parameters
+        // Validate sort parameters with fallback
         $validSortFields = ['priority', 'deadline', 'created_at'];
         $validSortDirections = ['asc', 'desc'];
 
-        if (!in_array($sortBy, $validSortFields)) {
+        // Ensure sort field is valid, fallback to created_at
+        if (!is_string($sortBy) || !in_array($sortBy, $validSortFields)) {
             $sortBy = 'created_at';
         }
-        if (!in_array($sortDirection, $validSortDirections)) {
+        
+        // Ensure sort direction is valid, fallback to desc
+        if (!is_string($sortDirection) || !in_array($sortDirection, $validSortDirections)) {
             $sortDirection = 'desc';
         }
 

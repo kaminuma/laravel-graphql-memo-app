@@ -88,10 +88,11 @@ class UpdateTodoMutation extends Mutation
 
         // Handle priority update
         if (isset($args['priority'])) {
-            if (!in_array($args['priority'], ['high', 'medium', 'low'])) {
+            $priority = strtolower($args['priority']);
+            if (!in_array($priority, ['high', 'medium', 'low'])) {
                 throw new \GraphQL\Error\Error('Invalid priority. Must be one of: high, medium, low');
             }
-            $updateData['priority'] = $args['priority'];
+            $updateData['priority'] = $priority;
         }
 
         $todo->update($updateData);

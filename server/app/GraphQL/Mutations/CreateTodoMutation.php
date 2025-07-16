@@ -66,7 +66,7 @@ class CreateTodoMutation extends Mutation
         }
 
         // Validate priority if provided, default to medium
-        $priority = $args['priority'] ?? 'medium';
+        $priority = isset($args['priority']) ? strtolower($args['priority']) : 'medium';
         if (!in_array($priority, ['high', 'medium', 'low'])) {
             throw new \GraphQL\Error\Error('Invalid priority. Must be one of: high, medium, low');
         }

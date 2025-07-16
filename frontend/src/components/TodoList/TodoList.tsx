@@ -38,12 +38,14 @@ import DialogActions from '@mui/material/DialogActions';
 
 
 
+// React, Apollo, MUIなどの必要なライブラリをインポート
+// TODOリスト画面のメインコンポーネント
 const TodoList: React.FC = () => {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
   
-  // Filter and sort state
+  // フィルターとソートの状態管理
   const [filters, setFilters] = React.useState<TodoFilters>({
     priority: null,
     deadlineStatus: null,
@@ -54,16 +56,18 @@ const TodoList: React.FC = () => {
     direction: 'desc',
   });
 
+  // TODO一覧をGraphQLから取得
   const { loading, error, data } = useQuery(GET_TODOS, {
     variables: {
       completed: filters.completed,
-      priority: filters.priority,
+      priority: filters.priority ? filters.priority.toUpperCase() : null,
       deadline_status: filters.deadlineStatus,
       sort_by: sortOptions.field,
       sort_direction: sortOptions.direction,
     },
   });
 
+  // TODO削除用のGraphQLミューテーション
   const [deleteTodo, { loading: deleting }] = useMutation(DELETE_TODO, {
     refetchQueries: [{ 
       query: GET_TODOS,
@@ -77,43 +81,47 @@ const TodoList: React.FC = () => {
     }],
   });
 
-  // Helper functions for visual indicators
+  // 優先度に応じた色を返す関数
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return '#ef4444';
-      case 'medium': return '#f59e0b';
-      case 'low': return '#10b981';
-      default: return '#6b7280';
+      case 'high': return '#ef4444'; // 高
+      case 'medium': return '#f59e0b'; // 中
+      case 'low': return '#10b981'; // 低
+      default: return '#6b7280'; // その他
     }
   };
 
+  // 優先度に応じたアイコンを返す関数
   const getPriorityIcon = (priority: string) => {
     switch (priority) {
-      case 'high': return <PriorityHighIcon />;
-      case 'medium': return <AccessTimeIcon />;
-      case 'low': return <CheckCircleIcon />;
-      default: return <AccessTimeIcon />;
+      case 'high': return <PriorityHighIcon />; // 高
+      case 'medium': return <AccessTimeIcon />; // 中
+      case 'low': return <CheckCircleIcon />; // 低
+      default: return <AccessTimeIcon />; // デフォルト
     }
   };
 
+  // 期限状況に応じた色を返す関数
   const getDeadlineStatusColor = (status: string) => {
     switch (status) {
-      case 'overdue': return '#ef4444';
-      case 'due_today': return '#f59e0b';
-      case 'due_soon': return '#eab308';
-      default: return '#6b7280';
+      case 'overdue': return '#ef4444'; // 期限切れ
+      case 'due_today': return '#f59e0b'; // 今日期限
+      case 'due_soon': return '#eab308'; // 期限間近
+      default: return '#6b7280'; // 通常
     }
   };
 
+  // 期限状況に応じたアイコンを返す関数
   const getDeadlineStatusIcon = (status: string) => {
     switch (status) {
-      case 'overdue': return <ErrorIcon />;
-      case 'due_today': return <WarningIcon />;
-      case 'due_soon': return <AccessTimeIcon />;
-      default: return <AccessTimeIcon />; // Default icon instead of null
+      case 'overdue': return <ErrorIcon />; // 期限切れ
+      case 'due_today': return <WarningIcon />; // 今日期限
+      case 'due_soon': return <AccessTimeIcon />; // 期限間近
+      default: return <AccessTimeIcon />; // デフォルト
     }
   };
 
+  // 期限を日本語でフォーマットする関数
   const formatDeadline = (deadline?: string) => {
     if (!deadline) return null;
     const date = new Date(deadline);
@@ -126,6 +134,7 @@ const TodoList: React.FC = () => {
     });
   };
 
+  // ローディング時の表示
   if (loading) {
     return (
       <Box py={6} textAlign="center">
@@ -135,18 +144,43 @@ const TodoList: React.FC = () => {
     );
   }
 
+  // エラー時の表示
   if (error) {
+    console.error('GraphQL Error:', error);
     return (
       <Box py={6} textAlign="center">
-        <Alert severity="error" sx={{ mb: 2 }}>エラーが発生しました: {error.message}</Alert>
-        <Button variant="contained" color="primary" onClick={() => window.location.reload()}>再試行</Button>
+        <Alert severity="error" sx={{ mb: 2 }}>
+          データの取得に失敗しました。
+          {error.networkError ? 'ネットワーク接続を確認してください。' : 
+           error.graphQLErrors?.length > 0 ? 'サーバーエラーが発生しました。' : 
+           '予期しないエラーが発生しました。'}
+        </Alert>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={() => window.location.reload()}
+          sx={{ mr: 2 }}
+        >
+          再読み込み
+        </Button>
+        <Button 
+          variant="outlined" 
+          color="secondary" 
+          onClick={() => {
+            setFilters({ priority: null, deadlineStatus: null, completed: null });
+            setSortOptions({ field: 'created_at', direction: 'desc' });
+          }}
+        >
+          フィルターをリセット
+        </Button>
       </Box>
     );
   }
 
+  // 取得したTODOリスト
   const todos: Todo[] = data?.todos || [];
 
-  // Calculate overdue count
+  // 期限切れTODOの件数を計算
   const overdueCount = todos.filter(todo => 
     todo.deadline_status === 'overdue' && !todo.completed
   ).length;
@@ -162,7 +196,7 @@ const TodoList: React.FC = () => {
         </Typography>
         <Box display="flex" alignItems="center" gap={2}>
           <Chip label={`${todos.length}件のTODO`} color="primary" variant="outlined" sx={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '0.5px', background: '#eef2ff' }} />
-          {/* Overdue notification badge */}
+          {/* 期限切れ通知バッジ */}
           {overdueCount > 0 && (
             <Badge badgeContent={overdueCount} color="error" sx={{ '& .MuiBadge-badge': { fontSize: '0.9rem', fontWeight: 700 } }}>
               <Chip
@@ -186,21 +220,25 @@ const TodoList: React.FC = () => {
             </Badge>
           )}
         </Box>
-        
-        {/* Filter and Sort Controls */}
+        {/* フィルター・ソートコントロール */}
         <Card sx={{ p: 3, width: '100%', maxWidth: 800, borderRadius: 3, background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)' }}>
           <Typography variant="h6" fontWeight={700} mb={2} sx={{ color: '#6366f1' }}>
             フィルター・ソート
           </Typography>
           <Grid container spacing={2} alignItems="center">
-            {/* Priority Filter */}
+            {/* 優先度フィルター */}
             <Grid item xs={12} sm={6} md={3}>
+              <Typography fontWeight={700} color="#6366f1" mb={0.5} fontSize="0.95rem">
+                優先度
+              </Typography>
               <FormControl fullWidth size="small">
-                <InputLabel>優先度</InputLabel>
                 <Select
                   value={filters.priority || ''}
-                  onChange={(e) => setFilters({ ...filters, priority: e.target.value as Priority || null })}
-                  label="優先度"
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setFilters({ ...filters, priority: v === '' ? null : v as Priority });
+                  }}
+                  displayEmpty
                 >
                   <MenuItem value="">すべて</MenuItem>
                   <MenuItem value="high">高</MenuItem>
@@ -209,15 +247,16 @@ const TodoList: React.FC = () => {
                 </Select>
               </FormControl>
             </Grid>
-            
-            {/* Deadline Status Filter */}
+            {/* 期限状況フィルター */}
             <Grid item xs={12} sm={6} md={3}>
+              <Typography fontWeight={700} color="#6366f1" mb={0.5} fontSize="0.95rem">
+                期限状況
+              </Typography>
               <FormControl fullWidth size="small">
-                <InputLabel>期限状況</InputLabel>
                 <Select
                   value={filters.deadlineStatus || ''}
                   onChange={(e) => setFilters({ ...filters, deadlineStatus: e.target.value as any || null })}
-                  label="期限状況"
+                  displayEmpty
                 >
                   <MenuItem value="">すべて</MenuItem>
                   <MenuItem value="overdue">期限切れ</MenuItem>
@@ -226,11 +265,12 @@ const TodoList: React.FC = () => {
                 </Select>
               </FormControl>
             </Grid>
-            
-            {/* Completion Status Filter */}
+            {/* 完了状況フィルター */}
             <Grid item xs={12} sm={6} md={3}>
+              <Typography fontWeight={700} color="#6366f1" mb={0.5} fontSize="0.95rem">
+                完了状況
+              </Typography>
               <FormControl fullWidth size="small">
-                <InputLabel>完了状況</InputLabel>
                 <Select
                   value={filters.completed === null || filters.completed === undefined ? '' : filters.completed.toString()}
                   onChange={(e) => {
@@ -240,7 +280,7 @@ const TodoList: React.FC = () => {
                       completed: value === '' ? null : value === 'true' 
                     });
                   }}
-                  label="完了状況"
+                  displayEmpty
                 >
                   <MenuItem value="">すべて</MenuItem>
                   <MenuItem value="false">未完了</MenuItem>
@@ -248,21 +288,25 @@ const TodoList: React.FC = () => {
                 </Select>
               </FormControl>
             </Grid>
-            
-            {/* Sort Options */}
+            {/* 並び順セレクト */}
             <Grid item xs={12} sm={6} md={3}>
+              <Typography fontWeight={700} color="#6366f1" mb={0.5} fontSize="0.95rem">
+                並び順
+              </Typography>
               <FormControl fullWidth size="small">
-                <InputLabel>並び順</InputLabel>
                 <Select
                   value={`${sortOptions.field}_${sortOptions.direction}`}
                   onChange={(e) => {
-                    const [field, direction] = e.target.value.split('_');
-                    setSortOptions({ 
+                    const value = e.target.value;
+                    const lastUnderscore = value.lastIndexOf('_');
+                    const field = value.substring(0, lastUnderscore);
+                    const direction = value.substring(lastUnderscore + 1);
+                    setSortOptions({
                       field: field as 'priority' | 'deadline' | 'created_at',
                       direction: direction as 'asc' | 'desc'
                     });
                   }}
-                  label="並び順"
+                  displayEmpty
                 >
                   <MenuItem value="created_at_desc">作成日時（新しい順）</MenuItem>
                   <MenuItem value="created_at_asc">作成日時（古い順）</MenuItem>
@@ -274,8 +318,7 @@ const TodoList: React.FC = () => {
               </FormControl>
             </Grid>
           </Grid>
-          
-          {/* Clear Filters Button */}
+          {/* フィルタークリアボタン */}
           <Box mt={2} display="flex" justifyContent="center">
             <Button
               variant="outlined"
@@ -290,6 +333,7 @@ const TodoList: React.FC = () => {
           </Box>
         </Card>
       </Stack>
+      {/* TODOリスト表示部 */}
       {todos.length === 0 ? (
         <Box py={6} textAlign="center">
           <Typography variant="h6" color="text.secondary">まだTODOがありません</Typography>
@@ -304,7 +348,7 @@ const TodoList: React.FC = () => {
                   <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
                     <Box display="flex" alignItems="center" gap={1}>
                       <Typography variant="h6" fontWeight={800} sx={{ color: todo.completed ? '#38a169' : '#3730a3', textDecoration: todo.completed ? 'line-through' : 'none', letterSpacing: '-0.5px' }}>{todo.title}</Typography>
-                      {/* Priority indicator */}
+                      {/* 優先度インジケーター */}
                       <Chip
                         icon={getPriorityIcon(todo.priority)}
                         label={todo.priority === 'high' ? '高' : todo.priority === 'medium' ? '中' : '低'}
@@ -316,7 +360,7 @@ const TodoList: React.FC = () => {
                           fontSize: '0.75rem'
                         }}
                       />
-                      {/* Deadline status indicator */}
+                      {/* 期限状況インジケーター */}
                       {todo.deadline_status !== 'normal' && getDeadlineStatusIcon(todo.deadline_status) && (
                         <Chip
                           icon={getDeadlineStatusIcon(todo.deadline_status)}
@@ -346,7 +390,7 @@ const TodoList: React.FC = () => {
                   {todo.description && (
                     <Typography variant="body1" color={todo.completed ? 'green' : 'primary.dark'} fontWeight={500} mb={1}>{todo.description}</Typography>
                   )}
-                  {/* Deadline display */}
+                  {/* 期限表示 */}
                   {todo.deadline && (
                     <Box display="flex" alignItems="center" gap={1} mb={1}>
                       <AccessTimeIcon sx={{ fontSize: 16, color: getDeadlineStatusColor(todo.deadline_status) }} />
@@ -381,6 +425,7 @@ const TodoList: React.FC = () => {
           ))}
         </Grid>
       )}
+      {/* 削除ダイアログ */}
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>本当に削除しますか？</DialogTitle>
         <DialogContent>
@@ -403,4 +448,5 @@ const TodoList: React.FC = () => {
   );
 };
 
+// デフォルトエクスポート
 export default TodoList; 
