@@ -50,12 +50,22 @@
    docker-compose exec backend composer install
    ```
 
-4. **DBマイグレーション・シーディング（初回のみ）**
+4. **アプリケーションキー生成（初回のみ）**
+   ```bash
+   docker-compose exec backend php artisan key:generate
+   ```
+   
+5. **※必要に応じて以下も実行してください：**
+   ```bash
+   docker-compose exec backend php artisan config:cache
+   ```
+
+6. **DBマイグレーション・シーディング（初回のみ）**
    ```bash
    docker-compose exec backend php artisan migrate --seed
    ```
 
-5. **フロントエンド依存インストール（初回のみ）**
+7. **フロントエンド依存インストール（初回のみ）**
    ```bash
    docker-compose exec frontend npm install
    ```
