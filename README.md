@@ -7,6 +7,16 @@
 
 このプロジェクトは、Laravel（バックエンド）・GraphQL API・React（Material UI, TypeScript）によるモダンなTODOアプリです。
 
+## このプロジェクトについて
+
+このアプリは「みんなでオープンに開発する」ことを目的に作成しています。
+もともとはバイブコーディングで作成した機能をベースに、今後もどんどん新しい機能を追加していく予定です。
+
+誰でも気軽にIssueやPull Requestを送ってください！
+ある程度の機能が揃った段階で正式リリースを予定しています。
+
+みなさんのご参加・ご貢献をお待ちしています！
+
 - バックエンド: Laravel + rebing/graphql-laravel
 - フロントエンド: React + TypeScript + Material UI + Apollo Client
 - DB: MySQL（Dockerコンテナ）
