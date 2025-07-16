@@ -44,6 +44,21 @@ class TodoType extends GraphQLType
             'updated_at' => [
                 'type' => Type::string(),
                 'description' => 'The updated date of the todo'
+            ],
+            'deadline' => [
+                'type' => Type::string(),
+                'description' => 'The deadline of the todo'
+            ],
+            'priority' => [
+                'type' => Type::nonNull(Type::string()),
+                'description' => 'The priority level of the todo (high, medium, low)'
+            ],
+            'deadline_status' => [
+                'type' => Type::nonNull(Type::string()),
+                'description' => 'The deadline status (overdue, due_today, due_soon, normal)',
+                'resolve' => function ($root) {
+                    return $root->getDeadlineStatus();
+                }
             ]
         ];
     }

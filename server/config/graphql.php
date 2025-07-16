@@ -91,6 +91,7 @@ return [
             'types' => [
                 App\GraphQL\Types\TodoType::class,
                 App\GraphQL\Types\UserType::class,
+                App\GraphQL\Types\PriorityType::class,
             ],
 
             // Laravel HTTP middleware

@@ -68,3 +68,7 @@ server/bootstrap/cache/*
 # Build outputs
 frontend/build/
 frontend/dist/ 
+
+#AI
+.kiro
+.cursor

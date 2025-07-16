@@ -3,6 +3,7 @@ import { useMutation } from '@apollo/client';
 import { CREATE_TODO, UPDATE_TODO } from '../../services/mutations';
 import { GET_TODOS } from '../../services/queries';
 import { useAuth } from '../../contexts/AuthContext';
+import { Todo, Priority } from '../../types/todo';
 import {
   Card,
   Box,
@@ -14,17 +15,13 @@ import {
   CircularProgress,
   Alert,
   FormControlLabel,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-
-type Todo = {
-  id: string;
-  title: string;
-  description?: string;
-  completed: boolean;
-  user_id: number;
-};
 
 type TodoFormProps = {
   mode: 'create' | 'edit';
@@ -37,6 +34,8 @@ const TodoForm: React.FC<TodoFormProps> = ({ mode, initialValues, onSuccess, onC
   const [title, setTitle] = useState<string>(initialValues?.title || '');
   const [description, setDescription] = useState<string>(initialValues?.description || '');
   const [completed, setCompleted] = useState<boolean>(initialValues?.completed ?? false);
+  const [deadline, setDeadline] = useState<string>(initialValues?.deadline || '');
+  const [priority, setPriority] = useState<Priority>(initialValues?.priority || 'medium');
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
 
@@ -52,6 +51,8 @@ const TodoForm: React.FC<TodoFormProps> = ({ mode, initialValues, onSuccess, onC
       setTitle(initialValues.title || '');
       setDescription(initialValues.description || '');
       setCompleted(initialValues.completed ?? false);
+      setDeadline(initialValues.deadline || '');
+      setPriority(initialValues.priority || 'medium');
     }
   }, [mode, initialValues]);
 
@@ -73,10 +74,14 @@ const TodoForm: React.FC<TodoFormProps> = ({ mode, initialValues, onSuccess, onC
             title: title.trim(),
             description: description.trim(),
             user_id: user.id,
+            deadline: deadline || null,
+            priority: priority.toUpperCase(),
           },
         });
         setTitle('');
         setDescription('');
+        setDeadline('');
+        setPriority('medium');
       } else if (mode === 'edit' && initialValues?.id) {
         await updateTodo({
           variables: {
@@ -84,6 +89,8 @@ const TodoForm: React.FC<TodoFormProps> = ({ mode, initialValues, onSuccess, onC
             title: title.trim(),
             description: description.trim(),
             completed,
+            deadline: deadline || null,
+            priority: priority.toUpperCase(),
           },
         });
       }
@@ -132,6 +139,38 @@ const TodoForm: React.FC<TodoFormProps> = ({ mode, initialValues, onSuccess, onC
               variant="outlined"
               InputLabelProps={{ style: { fontWeight: 700, color: '#6366f1' } }}
             />
+            <TextField
+              label="期限"
+              type="datetime-local"
+              value={deadline}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDeadline(e.target.value)}
+              fullWidth
+              size="medium"
+              variant="outlined"
+              InputLabelProps={{ 
+                style: { fontWeight: 700, color: '#6366f1' },
+                shrink: true 
+              }}
+              helperText="期限を設定しない場合は空のままにしてください"
+            />
+            <FormControl fullWidth size="medium" variant="outlined">
+              <InputLabel 
+                id="priority-label" 
+                style={{ fontWeight: 700, color: '#6366f1' }}
+              >
+                優先度
+              </InputLabel>
+              <Select
+                labelId="priority-label"
+                value={priority}
+                onChange={(e) => setPriority(e.target.value as Priority)}
+                label="優先度"
+              >
+                <MenuItem value="high">高</MenuItem>
+                <MenuItem value="medium">中</MenuItem>
+                <MenuItem value="low">低</MenuItem>
+              </Select>
+            </FormControl>
             {mode === 'edit' && (
               <FormControlLabel
                 control={
