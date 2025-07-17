@@ -39,33 +39,46 @@
    cd laravel-graphql-memo-app
    ```
 
-2. **Dockerコンテナの起動**
+2. **環境変数の設定**
+
+   ```bash
+   # Docker Compose用の.envファイルをコピー
+   cp .env.example .env
+
+   # Laravel用の.envファイルをコピー
+   cp server/.env.example server/.env
+   ```
+
+   設定には必要に応じて編集してください。
+
+
+3. **Dockerコンテナの起動**
    ```bash
    docker-compose up -d
    ```
 
 
-3. **バックエンド依存インストール（初回のみ）**
+4. **バックエンド依存インストール（初回のみ）**
    ```bash
    docker-compose exec backend composer install
    ```
 
-4. **アプリケーションキー生成（初回のみ）**
+5. **アプリケーションキー生成（初回のみ）**
    ```bash
    docker-compose exec backend php artisan key:generate
    ```
-   
-5. **※必要に応じて以下も実行してください：**
+
+6. **※必要に応じて以下も実行してください：**
    ```bash
    docker-compose exec backend php artisan config:cache
    ```
 
-6. **DBマイグレーション・シーディング（初回のみ）**
+7. **DBマイグレーション・シーディング（初回のみ）**
    ```bash
    docker-compose exec backend php artisan migrate --seed
    ```
 
-7. **フロントエンド依存インストール（初回のみ）**
+8. **フロントエンド依存インストール（初回のみ）**
    ```bash
    docker-compose exec frontend npm install
    ```
@@ -86,14 +99,11 @@
 - Password: `todo_password`
 - Database: `todo_app`
 
+データベースの認証情報は、設定した`.env`ファイルを参照してください。
 
-※ローカルMySQLと競合する場合は、ホスト側MySQLを一時停止してください。
+※ローカルMySQLと競合する場合は、`.env`ファイルで`DB_HOST_PORT`を設定するか、ホスト側MySQLを一時停止してください。
 
-## バックエンド環境変数（.env）
-初回セットアップ時は、`server/.env.example` をコピーして `server/.env` を作成し、必要に応じて編集してください。
-```bash
-cp server/.env.example server/.env
-```
+例：`.env`ファイルに`DB_HOST_PORT=13306`と記述すると、`localhost:13306`にMySQLを公開します。
 
 ---
 
