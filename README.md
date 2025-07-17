@@ -1,6 +1,6 @@
 # Laravel + GraphQL + React (Material UI) TODOアプリ
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ## 概要
@@ -130,6 +130,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Arnesh-pal"><img src="https://avatars.githubusercontent.com/u/144382300?v=4?s=100" width="100px;" alt="Arnesh Pal"/><br /><sub><b>Arnesh Pal</b></sub></a><br /><a href="https://github.com/kaminuma/laravel-graphql-memo-app/commits?author=Arnesh-pal" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/emilythedev"><img src="https://avatars.githubusercontent.com/u/140520093?v=4?s=100" width="100px;" alt="emilythedev"/><br /><sub><b>emilythedev</b></sub></a><br /><a href="https://github.com/kaminuma/laravel-graphql-memo-app/commits?author=emilythedev" title="Documentation">📖</a></td>
     </tr>
   </tbody>
   <tfoot>
