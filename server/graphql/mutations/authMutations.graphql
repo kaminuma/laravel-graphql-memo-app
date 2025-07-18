@@ -1,0 +1,15 @@
+extend type Mutation {
+  register(
+    name: String!
+    email: String!
+    password: String!
+    password_confirmation: String!
+  ): User @field(resolver: "App\\GraphQL\\Lighthouse\\AuthResolver@register")
+
+  login(
+    email: String!
+    password: String!
+  ): User @field(resolver: "App\\GraphQL\\Lighthouse\\AuthResolver@login")
+
+  logout: Boolean @field(resolver: "App\\GraphQL\\Lighthouse\\AuthResolver@logout")
+} 

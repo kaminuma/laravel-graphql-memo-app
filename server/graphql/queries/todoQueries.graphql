@@ -1,0 +1,9 @@
+extend type Query {
+  todos(
+    completed: Boolean
+    priority: Priority
+    deadline_status: String
+    sort_by: String
+    sort_direction: String
+  ): [Todo!]! @field(resolver: "App\\GraphQL\\Lighthouse\\TodoResolver@todos")
+} 

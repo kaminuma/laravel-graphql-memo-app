@@ -1,0 +1,8 @@
+extend type Query {
+  users(
+    id: Int
+    email: String
+  ): [User!]! @field(resolver: "App\\GraphQL\\Lighthouse\\UserResolver@users")
+
+  me: User @field(resolver: "App\\GraphQL\\Lighthouse\\UserResolver@me")
+} 

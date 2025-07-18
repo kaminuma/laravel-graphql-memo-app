@@ -31,6 +31,10 @@ COPY . /var/www/html
 # Copy existing application directory permissions
 COPY --chown=www-data:www-data . /var/www/html
 
+# Install Lighthouse and publish its config
+RUN composer require nuwave/lighthouse && \
+    php artisan vendor:publish --provider="Nuwave\\Lighthouse\\LighthouseServiceProvider"
+
 # Create Nginx configuration
 RUN echo 'server { \
     listen 8000; \
