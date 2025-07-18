@@ -1,0 +1,12 @@
+type Todo {
+  id: ID!
+  title: String!
+  description: String
+  completed: Boolean!
+  user_id: Int!
+  created_at: String
+  updated_at: String
+  deadline: String
+  priority: Priority!
+  deadline_status: String! @method(name: "getDeadlineStatus")
+} 

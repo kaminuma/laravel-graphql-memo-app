@@ -1,0 +1,8 @@
+# GraphQLスキーマ分割
+#import "types/priority.graphql"
+#import "types/user.graphql"
+#import "types/todo.graphql"
+#import "queries/todoQueries.graphql"
+#import "queries/userQueries.graphql"
+#import "mutations/todoMutations.graphql"
+#import "mutations/authMutations.graphql" 
