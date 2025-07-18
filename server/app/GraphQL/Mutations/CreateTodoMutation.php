@@ -5,56 +5,15 @@ declare(strict_types=1);
 namespace App\GraphQL\Mutations;
 
 use App\Models\Todo;
-use Closure;
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Definition\Type;
-use Rebing\GraphQL\Support\Mutation;
+use Illuminate\Support\Facades\Auth;
 
-class CreateTodoMutation extends Mutation
+class CreateTodoMutation
 {
-    protected $attributes = [
-        'name' => 'createTodo',
-        'description' => 'Create a new todo'
-    ];
-
-    public function type(): Type
+    public function resolve($root, array $args, $context, $resolveInfo)
     {
-        return \GraphQL::type('Todo');
-    }
-
-    public function args(): array
-    {
-        return [
-            'title' => [
-                'name' => 'title',
-                'type' => Type::nonNull(Type::string()),
-                'description' => 'The title of the todo'
-            ],
-            'description' => [
-                'name' => 'description',
-                'type' => Type::string(),
-                'description' => 'The description of the todo'
-            ],
-            'user_id' => [
-                'name' => 'user_id',
-                'type' => Type::nonNull(Type::id()),
-                'description' => 'The user ID for the todo'
-            ],
-            'deadline' => [
-                'name' => 'deadline',
-                'type' => Type::string(),
-                'description' => 'The deadline for the todo (ISO 8601 format)'
-            ],
-            'priority' => [
-                'name' => 'priority',
-                'type' => \GraphQL::type('Priority'),
-                'description' => 'The priority level of the todo'
-            ]
-        ];
-    }
-
-    public function resolve($root, array $args, $context, ResolveInfo $resolveInfo, Closure $getSelectFields)
-    {
+        // Use authenticated user if user_id not provided
+        $userId = $args['user_id'] ?? Auth::id();
+        
         // Validate deadline format if provided
         $deadline = null;
         if (isset($args['deadline']) && !empty($args['deadline'])) {
@@ -65,8 +24,8 @@ class CreateTodoMutation extends Mutation
             }
         }
 
-        // Validate priority if provided, default to medium
-        $priority = isset($args['priority']) ? strtolower($args['priority']) : 'medium';
+        // Validate priority if provided, default to low
+        $priority = isset($args['priority']) ? strtolower($args['priority']) : 'low';
         if (!in_array($priority, ['high', 'medium', 'low'])) {
             throw new \GraphQL\Error\Error('Invalid priority. Must be one of: high, medium, low');
         }
@@ -74,7 +33,7 @@ class CreateTodoMutation extends Mutation
         $todo = Todo::create([
             'title' => $args['title'],
             'description' => $args['description'] ?? null,
-            'user_id' => (int) $args['user_id'],
+            'user_id' => (int) $userId,
             'completed' => false,
             'deadline' => $deadline,
             'priority' => $priority

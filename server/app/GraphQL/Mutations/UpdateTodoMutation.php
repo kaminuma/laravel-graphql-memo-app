@@ -5,60 +5,10 @@ declare(strict_types=1);
 namespace App\GraphQL\Mutations;
 
 use App\Models\Todo;
-use Closure;
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Definition\Type;
-use Rebing\GraphQL\Support\Mutation;
 
-class UpdateTodoMutation extends Mutation
+class UpdateTodoMutation
 {
-    protected $attributes = [
-        'name' => 'updateTodo',
-        'description' => 'Update an existing todo'
-    ];
-
-    public function type(): Type
-    {
-        return \GraphQL::type('Todo');
-    }
-
-    public function args(): array
-    {
-        return [
-            'id' => [
-                'name' => 'id',
-                'type' => Type::nonNull(Type::id()),
-                'description' => 'The ID of the todo to update'
-            ],
-            'title' => [
-                'name' => 'title',
-                'type' => Type::string(),
-                'description' => 'The title of the todo'
-            ],
-            'description' => [
-                'name' => 'description',
-                'type' => Type::string(),
-                'description' => 'The description of the todo'
-            ],
-            'completed' => [
-                'name' => 'completed',
-                'type' => Type::boolean(),
-                'description' => 'Whether the todo is completed'
-            ],
-            'deadline' => [
-                'name' => 'deadline',
-                'type' => Type::string(),
-                'description' => 'The deadline for the todo (ISO 8601 format)'
-            ],
-            'priority' => [
-                'name' => 'priority',
-                'type' => \GraphQL::type('Priority'),
-                'description' => 'The priority level of the todo'
-            ]
-        ];
-    }
-
-    public function resolve($root, array $args, $context, ResolveInfo $resolveInfo, Closure $getSelectFields)
+    public function resolve($root, array $args, $context, $resolveInfo)
     {
         $todo = Todo::findOrFail((int) $args['id']);
         

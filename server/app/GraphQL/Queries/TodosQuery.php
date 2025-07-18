@@ -5,61 +5,11 @@ declare(strict_types=1);
 namespace App\GraphQL\Queries;
 
 use App\Models\Todo;
-use Closure;
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Definition\Type;
-use Rebing\GraphQL\Support\Query;
 use Illuminate\Support\Facades\Auth;
 
-class TodosQuery extends Query
+class TodosQuery
 {
-    protected $attributes = [
-        'name' => 'todos',
-        'description' => 'Get all todos'
-    ];
-
-    public function type(): Type
-    {
-        return Type::listOf(\GraphQL::type('Todo'));
-    }
-
-    public function args(): array
-    {
-        return [
-            'user_id' => [
-                'name' => 'user_id',
-                'type' => Type::id(),
-                'description' => 'Filter todos by user ID'
-            ],
-            'completed' => [
-                'name' => 'completed',
-                'type' => Type::boolean(),
-                'description' => 'Filter todos by completion status'
-            ],
-            'priority' => [
-                'name' => 'priority',
-                'type' => \GraphQL::type('Priority'),
-                'description' => 'Filter todos by priority level'
-            ],
-            'deadline_status' => [
-                'name' => 'deadline_status',
-                'type' => Type::string(),
-                'description' => 'Filter todos by deadline status (overdue, due_today, due_this_week)'
-            ],
-            'sort_by' => [
-                'name' => 'sort_by',
-                'type' => Type::string(),
-                'description' => 'Sort field (priority, deadline, created_at)'
-            ],
-            'sort_direction' => [
-                'name' => 'sort_direction',
-                'type' => Type::string(),
-                'description' => 'Sort direction (asc, desc)'
-            ]
-        ];
-    }
-
-    public function resolve($root, array $args, $context, ResolveInfo $resolveInfo, Closure $getSelectFields)
+    public function resolve($root, array $args, $context, $resolveInfo)
     {
         $user = Auth::user();
         

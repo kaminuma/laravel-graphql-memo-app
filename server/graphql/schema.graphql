@@ -1,0 +1,155 @@
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+"A date string with format `Y-m-d`, e.g. `2011-05-23`."
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+type Query {
+    "Get all todos for the authenticated user"
+    todos(
+        "Filter by completion status"
+        completed: Boolean
+        "Filter by priority level"
+        priority: Priority
+        "Filter by deadline status"
+        deadline_status: String
+        "Sort field (priority, deadline, created_at)"
+        sort_by: String
+        "Sort direction (asc, desc)"
+        sort_direction: String
+    ): [Todo!]! @auth @field(resolver: "App\\GraphQL\\Queries\\TodosQuery@resolve")
+
+    "Get all users (admin only)"
+    users: [User!]! @field(resolver: "App\\GraphQL\\Queries\\UsersQuery@resolve")
+
+    "Get the currently authenticated user"
+    me: User @auth @field(resolver: "App\\GraphQL\\Queries\\MeQuery@resolve")
+}
+
+type Mutation {
+    "Create a new todo"
+    createTodo(
+        "Title of the todo"
+        title: String!
+        "Description of the todo"
+        description: String
+        "User ID (defaults to authenticated user)"
+        user_id: ID
+        "Deadline for the todo"
+        deadline: DateTime
+        "Priority level"
+        priority: Priority = LOW
+    ): Todo! @field(resolver: "App\\GraphQL\\Mutations\\CreateTodoMutation@resolve")
+
+    "Update an existing todo"
+    updateTodo(
+        "ID of the todo to update"
+        id: ID!
+        "New title"
+        title: String
+        "New description"
+        description: String
+        "Completion status"
+        completed: Boolean
+        "New deadline"
+        deadline: DateTime
+        "New priority level"
+        priority: Priority
+    ): Todo! @field(resolver: "App\\GraphQL\\Mutations\\UpdateTodoMutation@resolve")
+
+    "Delete a todo"
+    deleteTodo(
+        "ID of the todo to delete"
+        id: ID!
+    ): Boolean! @field(resolver: "App\\GraphQL\\Mutations\\DeleteTodoMutation@resolve")
+
+    "Register a new user"
+    register(
+        "User's name"
+        name: String!
+        "User's email address"
+        email: String!
+        "User's password"
+        password: String!
+    ): User! @field(resolver: "App\\GraphQL\\Mutations\\RegisterMutation@resolve")
+
+    "Login with email and password"
+    login(
+        "User's email address"
+        email: String!
+        "User's password"
+        password: String!
+    ): User! @field(resolver: "App\\GraphQL\\Mutations\\LoginMutation@resolve")
+
+    "Logout the current user"
+    logout: Boolean! @field(resolver: "App\\GraphQL\\Mutations\\LogoutMutation@resolve")
+}
+
+"A todo item"
+type Todo {
+    "Unique identifier"
+    id: ID!
+    
+    "Title of the todo"
+    title: String!
+    
+    "Description of the todo"
+    description: String
+    
+    "Whether the todo is completed"
+    completed: Boolean!
+    
+    "User ID who owns this todo"
+    user_id: ID!
+    
+    "User who owns this todo"
+    user: User! @belongsTo
+    
+    "When the todo was created"
+    created_at: DateTime!
+    
+    "When the todo was last updated"
+    updated_at: DateTime!
+    
+    "Deadline for the todo"
+    deadline: DateTime
+    
+    "Priority level of the todo"
+    priority: Priority!
+    
+    "The deadline status of the todo"
+    deadline_status: String! @method(name: "getDeadlineStatus")
+}
+
+"A user of the application"
+type User {
+    "Unique identifier"
+    id: ID!
+    
+    "User's display name"
+    name: String!
+    
+    "User's email address"
+    email: String!
+    
+    "When the user was created"
+    created_at: DateTime!
+    
+    "When the user was last updated"
+    updated_at: DateTime!
+    
+    "Todos belonging to this user"
+    todos: [Todo!]! @hasMany
+}
+
+"Priority levels for todos"
+enum Priority {
+    "High priority - urgent items"
+    HIGH @enum(value: "high")
+    
+    "Medium priority - normal items"
+    MEDIUM @enum(value: "medium")
+    
+    "Low priority - can wait items"
+    LOW @enum(value: "low")
+}
