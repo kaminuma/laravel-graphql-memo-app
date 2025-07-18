@@ -27,6 +27,7 @@ return [
          * make sure to return spec-compliant responses in case an error is thrown.
          */
         'middleware' => [
+            \Illuminate\Http\Middleware\HandleCors::class,
             \Nuwave\Lighthouse\Support\Http\Middleware\LogGraphQLQueries::class,
         ],
 
