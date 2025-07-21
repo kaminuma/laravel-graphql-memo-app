@@ -2,7 +2,10 @@
 #import types/priority.graphql
 #import types/user.graphql
 #import types/todo.graphql
+#import types/category.graphql
 #import queries/todoQueries.graphql
 #import queries/userQueries.graphql
+#import queries/categoryQueries.graphql
 #import mutations/todoMutations.graphql
-#import mutations/authMutations.graphql 
+#import mutations/authMutations.graphql
+#import mutations/categoryMutations.graphql 
