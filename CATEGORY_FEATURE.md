@@ -40,11 +40,26 @@ Added comprehensive category functionality to the Laravel GraphQL TODO applicati
 - **UI/UX**: Consistent Material-UI design with existing app
 
 ## Default Categories
+The following Japanese categories are automatically seeded when setting up the database:
+
 1. 仕事 (Work) - Blue (#1976d2)
 2. プライベート (Private) - Green (#388e3c)
 3. 勉強 (Study) - Orange (#f57c00)
 4. 買い物 (Shopping) - Red (#d32f2f)
 5. その他 (Other) - Purple (#7b1fa2)
+
+### Seeding Categories
+The default categories are automatically created when running:
+```bash
+docker-compose exec backend php artisan migrate --seed
+```
+
+Or manually run just the seeder:
+```bash
+docker-compose exec backend php artisan db:seed --class=CategorySeeder
+```
+
+The seeder uses `firstOrCreate` so it's safe to run multiple times without creating duplicates.
 
 ## Usage
 - Categories are **optional** - TODOs can be created without selecting a category

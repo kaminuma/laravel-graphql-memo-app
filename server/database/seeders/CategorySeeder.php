@@ -20,8 +20,17 @@ class CategorySeeder extends Seeder
             ['name' => 'その他', 'color' => '#7b1fa2'],
         ];
 
+        $this->command->info('Creating default categories...');
+
         foreach ($categories as $category) {
-            Category::firstOrCreate(['name' => $category['name']], $category);
+            $createdCategory = Category::firstOrCreate(['name' => $category['name']], $category);
+            if ($createdCategory->wasRecentlyCreated) {
+                $this->command->info("Created category: {$category['name']}");
+            } else {
+                $this->command->info("Category already exists: {$category['name']}");
+            }
         }
+
+        $this->command->info('Default categories seeding completed.');
     }
 }
