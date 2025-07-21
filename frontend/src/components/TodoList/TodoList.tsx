@@ -234,7 +234,7 @@ const TodoList: React.FC = () => {
           </Typography>
           <Grid container spacing={2} alignItems="center">
             {/* 優先度フィルター */}
-            <Grid item xs={12} sm={6} md={2.4}>
+            <Grid item xs={12} sm={6} md={2}>
               <Typography fontWeight={700} color="#6366f1" mb={0.5} fontSize="0.95rem">
                 優先度
               </Typography>
