@@ -26,7 +26,7 @@ return new class extends Migration
         Schema::table('todos', function (Blueprint $table) {
             $table->dropForeign(['category_id']);
             $table->dropIndex(['category_id_index']);
-            $table->dropIndex(['todos_user_id_category_id_index']);
+            $table->dropIndex(['user_id', 'category_id']);
             $table->dropColumn('category_id');
         });
     }
