@@ -2,6 +2,14 @@ export type Priority = 'high' | 'medium' | 'low';
 
 export type DeadlineStatus = 'overdue' | 'due_today' | 'due_soon' | 'normal';
 
+export interface Category {
+  id: string;
+  name: string;
+  color?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Todo {
   id: string;
   title: string;
@@ -11,6 +19,8 @@ export interface Todo {
   deadline?: string;
   priority: Priority;
   deadline_status: DeadlineStatus;
+  category_id?: number;
+  category?: Category;
   created_at: string;
   updated_at: string;
 }
@@ -19,6 +29,7 @@ export interface TodoFilters {
   priority?: Priority | null;
   deadlineStatus?: 'overdue' | 'due_today' | 'due_this_week' | null;
   completed?: boolean | null;
+  categoryId?: string | null;
 }
 
 export interface TodoSortOptions {
@@ -31,6 +42,7 @@ export interface CreateTodoInput {
   description?: string;
   deadline?: string;
   priority?: Priority;
+  category_id?: string;
 }
 
 export interface UpdateTodoInput {
@@ -40,4 +52,5 @@ export interface UpdateTodoInput {
   completed?: boolean;
   deadline?: string;
   priority?: Priority;
+  category_id?: string;
 }
