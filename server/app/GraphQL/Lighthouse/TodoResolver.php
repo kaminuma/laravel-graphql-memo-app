@@ -25,6 +25,9 @@ class TodoResolver
             $priority = strtolower($args['priority']);
             $query->where('priority', $priority);
         }
+        if (isset($args['category_id'])) {
+            $query->where('category_id', (int) $args['category_id']);
+        }
         if (isset($args['deadline_status'])) {
             $now = now();
             switch ($args['deadline_status']) {
@@ -89,7 +92,8 @@ class TodoResolver
             'user_id' => (int) $args['user_id'],
             'completed' => false,
             'deadline' => $deadline,
-            'priority' => $priority
+            'priority' => $priority,
+            'category_id' => isset($args['category_id']) ? (int) $args['category_id'] : null
         ]);
         return $todo;
     }
@@ -125,6 +129,9 @@ class TodoResolver
                 throw new Error('Invalid priority. Must be one of: high, medium, low');
             }
             $updateData['priority'] = $priority;
+        }
+        if (isset($args['category_id'])) {
+            $updateData['category_id'] = !empty($args['category_id']) ? (int) $args['category_id'] : null;
         }
         $todo->update($updateData);
         return $todo;

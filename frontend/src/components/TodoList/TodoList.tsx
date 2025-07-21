@@ -1,8 +1,8 @@
 import React from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_TODOS } from '../../services/queries';
+import { GET_TODOS, GET_CATEGORIES } from '../../services/queries';
 import { DELETE_TODO } from '../../services/mutations';
-import { Todo, TodoFilters, TodoSortOptions, Priority } from '../../types/todo';
+import { Todo, TodoFilters, TodoSortOptions, Priority, Category } from '../../types/todo';
 import {
   Card,
   Box,
@@ -50,11 +50,16 @@ const TodoList: React.FC = () => {
     priority: null,
     deadlineStatus: null,
     completed: null,
+    categoryId: null,
   });
   const [sortOptions, setSortOptions] = React.useState<TodoSortOptions>({
     field: 'created_at',
     direction: 'desc',
   });
+
+  // Fetch categories
+  const { data: categoriesData } = useQuery(GET_CATEGORIES);
+  const categories = categoriesData?.categories || [];
 
   // TODO一覧をGraphQLから取得
   const { loading, error, data } = useQuery(GET_TODOS, {
@@ -64,6 +69,7 @@ const TodoList: React.FC = () => {
       deadline_status: filters.deadlineStatus,
       sort_by: sortOptions.field,
       sort_direction: sortOptions.direction,
+      category_id: filters.categoryId,
     },
   });
 
@@ -73,10 +79,11 @@ const TodoList: React.FC = () => {
       query: GET_TODOS,
       variables: {
         completed: filters.completed,
-        priority: filters.priority,
+        priority: filters.priority ? filters.priority.toUpperCase() : null,
         deadline_status: filters.deadlineStatus,
         sort_by: sortOptions.field,
         sort_direction: sortOptions.direction,
+        category_id: filters.categoryId,
       },
     }],
   });
@@ -167,7 +174,7 @@ const TodoList: React.FC = () => {
           variant="outlined" 
           color="secondary" 
           onClick={() => {
-            setFilters({ priority: null, deadlineStatus: null, completed: null });
+            setFilters({ priority: null, deadlineStatus: null, completed: null, categoryId: null });
             setSortOptions({ field: 'created_at', direction: 'desc' });
           }}
         >
@@ -227,7 +234,7 @@ const TodoList: React.FC = () => {
           </Typography>
           <Grid container spacing={2} alignItems="center">
             {/* 優先度フィルター */}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={2.4}>
               <Typography fontWeight={700} color="#6366f1" mb={0.5} fontSize="0.95rem">
                 優先度
               </Typography>
@@ -247,8 +254,40 @@ const TodoList: React.FC = () => {
                 </Select>
               </FormControl>
             </Grid>
+            {/* カテゴリフィルター */}
+            <Grid item xs={12} sm={6} md={2.4}>
+              <Typography fontWeight={700} color="#6366f1" mb={0.5} fontSize="0.95rem">
+                カテゴリ
+              </Typography>
+              <FormControl fullWidth size="small">
+                <Select
+                  value={filters.categoryId || ''}
+                  onChange={(e) => setFilters({ ...filters, categoryId: e.target.value || null })}
+                  displayEmpty
+                >
+                  <MenuItem value="">すべて</MenuItem>
+                  {categories.map((category: Category) => (
+                    <MenuItem key={category.id} value={category.id}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {category.color && (
+                          <Box
+                            sx={{
+                              width: 8,
+                              height: 8,
+                              borderRadius: '50%',
+                              backgroundColor: category.color,
+                            }}
+                          />
+                        )}
+                        {category.name}
+                      </Box>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
             {/* 期限状況フィルター */}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={2.4}>
               <Typography fontWeight={700} color="#6366f1" mb={0.5} fontSize="0.95rem">
                 期限状況
               </Typography>
@@ -266,7 +305,7 @@ const TodoList: React.FC = () => {
               </FormControl>
             </Grid>
             {/* 完了状況フィルター */}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={2.4}>
               <Typography fontWeight={700} color="#6366f1" mb={0.5} fontSize="0.95rem">
                 完了状況
               </Typography>
@@ -277,7 +316,7 @@ const TodoList: React.FC = () => {
                     const value = e.target.value;
                     setFilters({ 
                       ...filters, 
-                      completed: value === '' ? null : value === 'true' 
+                      completed: value === '' ? null : value === 'true'
                     });
                   }}
                   displayEmpty
@@ -289,7 +328,7 @@ const TodoList: React.FC = () => {
               </FormControl>
             </Grid>
             {/* 並び順セレクト */}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={2.4}>
               <Typography fontWeight={700} color="#6366f1" mb={0.5} fontSize="0.95rem">
                 並び順
               </Typography>
@@ -323,7 +362,7 @@ const TodoList: React.FC = () => {
             <Button
               variant="outlined"
               onClick={() => {
-                setFilters({ priority: null, deadlineStatus: null, completed: null });
+                setFilters({ priority: null, deadlineStatus: null, completed: null, categoryId: null });
                 setSortOptions({ field: 'created_at', direction: 'desc' });
               }}
               sx={{ fontWeight: 600 }}
@@ -348,6 +387,19 @@ const TodoList: React.FC = () => {
                   <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
                     <Box display="flex" alignItems="center" gap={1}>
                       <Typography variant="h6" fontWeight={800} sx={{ color: todo.completed ? '#38a169' : '#3730a3', textDecoration: todo.completed ? 'line-through' : 'none', letterSpacing: '-0.5px' }}>{todo.title}</Typography>
+                      {/* カテゴリインジケーター */}
+                      {todo.category && (
+                        <Chip
+                          label={todo.category.name}
+                          size="small"
+                          sx={{
+                            backgroundColor: todo.category.color || '#6b7280',
+                            color: 'white',
+                            fontWeight: 700,
+                            fontSize: '0.75rem'
+                          }}
+                        />
+                      )}
                       {/* 優先度インジケーター */}
                       <Chip
                         icon={getPriorityIcon(todo.priority)}

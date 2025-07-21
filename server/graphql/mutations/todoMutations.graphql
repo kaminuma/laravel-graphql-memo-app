@@ -5,6 +5,7 @@ extend type Mutation {
     user_id: ID!
     deadline: String
     priority: Priority
+    category_id: ID
   ): Todo @field(resolver: "App\\GraphQL\\Lighthouse\\TodoResolver@createTodo")
 
   updateTodo(
@@ -14,6 +15,7 @@ extend type Mutation {
     completed: Boolean
     deadline: String
     priority: Priority
+    category_id: ID
   ): Todo @field(resolver: "App\\GraphQL\\Lighthouse\\TodoResolver@updateTodo")
 
   deleteTodo(

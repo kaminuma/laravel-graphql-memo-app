@@ -9,4 +9,6 @@ type Todo {
   deadline: String
   priority: Priority!
   deadline_status: String! @method(name: "getDeadlineStatus")
+  category_id: Int
+  category: Category @belongsTo
 } 

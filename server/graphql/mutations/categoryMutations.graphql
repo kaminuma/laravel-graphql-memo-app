@@ -1,0 +1,16 @@
+extend type Mutation {
+  createCategory(
+    name: String!
+    color: String
+  ): Category @field(resolver: "App\\GraphQL\\Lighthouse\\CategoryResolver@createCategory")
+
+  updateCategory(
+    id: ID!
+    name: String
+    color: String
+  ): Category @field(resolver: "App\\GraphQL\\Lighthouse\\CategoryResolver@updateCategory")
+
+  deleteCategory(
+    id: ID!
+  ): Boolean @field(resolver: "App\\GraphQL\\Lighthouse\\CategoryResolver@deleteCategory")
+}

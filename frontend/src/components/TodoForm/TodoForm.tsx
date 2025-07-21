@@ -1,9 +1,9 @@
 import React, { useState, FormEvent, useEffect } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_TODO, UPDATE_TODO } from '../../services/mutations';
-import { GET_TODOS } from '../../services/queries';
+import { GET_TODOS, GET_CATEGORIES } from '../../services/queries';
 import { useAuth } from '../../contexts/AuthContext';
-import { Todo, Priority } from '../../types/todo';
+import { Todo, Priority, Category } from '../../types/todo';
 import {
   Card,
   Box,
@@ -36,8 +36,13 @@ const TodoForm: React.FC<TodoFormProps> = ({ mode, initialValues, onSuccess, onC
   const [completed, setCompleted] = useState<boolean>(initialValues?.completed ?? false);
   const [deadline, setDeadline] = useState<string>(initialValues?.deadline || '');
   const [priority, setPriority] = useState<Priority>(initialValues?.priority || 'medium');
+  const [categoryId, setCategoryId] = useState<string>(initialValues?.category_id?.toString() || '');
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
+
+  // Fetch categories
+  const { data: categoriesData } = useQuery(GET_CATEGORIES);
+  const categories = categoriesData?.categories || [];
 
   const [createTodo, { loading: creating }] = useMutation(CREATE_TODO, {
     refetchQueries: [{ query: GET_TODOS }],
@@ -53,6 +58,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ mode, initialValues, onSuccess, onC
       setCompleted(initialValues.completed ?? false);
       setDeadline(initialValues.deadline || '');
       setPriority(initialValues.priority || 'medium');
+      setCategoryId(initialValues.category_id?.toString() || '');
     }
   }, [mode, initialValues]);
 
@@ -76,12 +82,14 @@ const TodoForm: React.FC<TodoFormProps> = ({ mode, initialValues, onSuccess, onC
             user_id: user.id,
             deadline: deadline || null,
             priority: priority.toUpperCase(),
+            category_id: categoryId || null,
           },
         });
         setTitle('');
         setDescription('');
         setDeadline('');
         setPriority('medium');
+        setCategoryId('');
       } else if (mode === 'edit' && initialValues?.id) {
         await updateTodo({
           variables: {
@@ -91,6 +99,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ mode, initialValues, onSuccess, onC
             completed,
             deadline: deadline || null,
             priority: priority.toUpperCase(),
+            category_id: categoryId || null,
           },
         });
       }
@@ -169,6 +178,39 @@ const TodoForm: React.FC<TodoFormProps> = ({ mode, initialValues, onSuccess, onC
                 <MenuItem value="high">高</MenuItem>
                 <MenuItem value="medium">中</MenuItem>
                 <MenuItem value="low">低</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl fullWidth size="medium" variant="outlined">
+              <InputLabel 
+                id="category-label" 
+                style={{ fontWeight: 700, color: '#6366f1' }}
+              >
+                カテゴリ（任意）
+              </InputLabel>
+              <Select
+                labelId="category-label"
+                value={categoryId}
+                onChange={(e) => setCategoryId(e.target.value as string)}
+                label="カテゴリ（任意）"
+              >
+                <MenuItem value="">なし</MenuItem>
+                {categories.map((category: Category) => (
+                  <MenuItem key={category.id} value={category.id}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      {category.color && (
+                        <Box
+                          sx={{
+                            width: 12,
+                            height: 12,
+                            borderRadius: '50%',
+                            backgroundColor: category.color,
+                          }}
+                        />
+                      )}
+                      {category.name}
+                    </Box>
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             {mode === 'edit' && (

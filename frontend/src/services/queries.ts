@@ -7,6 +7,7 @@ export const GET_TODOS = gql`
     $deadline_status: String
     $sort_by: String
     $sort_direction: String
+    $category_id: ID
   ) {
     todos(
       completed: $completed
@@ -14,6 +15,7 @@ export const GET_TODOS = gql`
       deadline_status: $deadline_status
       sort_by: $sort_by
       sort_direction: $sort_direction
+      category_id: $category_id
     ) {
       id
       title
@@ -23,6 +25,24 @@ export const GET_TODOS = gql`
       deadline
       priority
       deadline_status
+      category_id
+      category {
+        id
+        name
+        color
+      }
+      created_at
+      updated_at
+    }
+  }
+`;
+
+export const GET_CATEGORIES = gql`
+  query GetCategories {
+    categories {
+      id
+      name
+      color
       created_at
       updated_at
     }
