@@ -316,7 +316,7 @@ const TodoList: React.FC = () => {
                     const value = e.target.value;
                     setFilters({ 
                       ...filters, 
-                      completed: value === '' ? null : value === 'true' ? true : false
+                      completed: value === '' ? null : value === 'true'
                     });
                   }}
                   displayEmpty
