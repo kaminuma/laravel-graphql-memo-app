@@ -79,7 +79,7 @@ const TodoList: React.FC = () => {
       query: GET_TODOS,
       variables: {
         completed: filters.completed,
-        priority: filters.priority,
+        priority: filters.priority ? filters.priority.toUpperCase() : null,
         deadline_status: filters.deadlineStatus,
         sort_by: sortOptions.field,
         sort_direction: sortOptions.direction,
@@ -316,7 +316,7 @@ const TodoList: React.FC = () => {
                     const value = e.target.value;
                     setFilters({ 
                       ...filters, 
-                      completed: value === '' ? null : value === 'true' 
+                      completed: value === '' ? null : value === 'true' ? true : false
                     });
                   }}
                   displayEmpty
