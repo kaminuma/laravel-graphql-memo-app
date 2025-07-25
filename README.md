@@ -118,11 +118,24 @@ docker-compose exec frontend npm install
 
 ## 🧪 テスト実行方法
 
-### 🎨 フロントエンド
+### 🎨 フロントエンド単体テスト
 
 ```bash
 cd frontend
 npm test
+```
+
+### 🧩 E2Eテスト（Cypress）
+
+```bash
+# フロントエンドディレクトリに移動
+cd frontend
+
+# Cypressを開発モードで実行（GUIあり）
+npm run cypress:open
+
+# または、コマンドライン実行（ヘッドレスモード）
+npm run cypress:run
 ```
 
 ### 🔧 バックエンド（Laravel）
@@ -140,6 +153,65 @@ php artisan test
 
 📚 詳細な開発手順やコマンドは `docs/SETUP.md` を参照してください。
 ❓ 不明点・トラブルは issue または README 末尾に追記してください。
+
+---
+
+## 🔧 GraphQL Codegen 活用ガイド
+
+フロントエンドでGraphQL Code Generatorを活用して型安全な開発を行います。
+
+### セットアップ手順
+
+1. **必要なパッケージをインストール**
+```bash
+cd frontend
+npm install @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations @graphql-codegen/typescript-react-apollo --save-dev
+```
+
+2. **設定ファイル作成**
+```bash
+# frontend/codegen.yml ファイル作成
+schema:
+  - 'http://localhost:8000/graphql':
+      headers:
+        Accept: 'application/json'
+documents: 
+  - './src/services/**/*.ts'
+  - './src/graphql/**/*.graphql'
+generates:
+  src/generated/graphql.tsx:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
+    config:
+      withHooks: true
+      withComponent: false
+      withHOC: false
+```
+
+3. **package.jsonにスクリプト追加**
+```json
+"scripts": {
+  "codegen": "graphql-codegen --config codegen.yml"
+}
+```
+
+4. **使用方法**
+```bash
+# コード生成実行
+npm run codegen
+
+# 生成されたコードをインポート
+import { useGetTodosQuery } from '../generated/graphql';
+
+// コンポーネント内で使用
+const { data, loading, error } = useGetTodosQuery({
+  variables: { /* クエリ変数 */ }
+});
+```
+
+この機能は開発の生産性向上と型の安全性確保に役立ちます。
 
 ---
 

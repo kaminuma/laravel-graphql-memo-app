@@ -32,6 +32,7 @@
     "test:all": "npm run test && npm run test:e2e",
     "test:e2e:cleanup": "cypress run && cd ../server && php artisan migrate:fresh --seed",
     "test:e2e:cleanup:docker": "cypress run && docker-compose exec app php artisan migrate:fresh --seed",
+    "codegen": "graphql-codegen --config codegen.yml",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -55,6 +56,10 @@
   "proxy": "http://localhost:8000",
   "devDependencies": {
     "@apollo/client": "^3.13.8",
+    "@graphql-codegen/cli": "^5.0.7",
+    "@graphql-codegen/typescript": "^4.1.6",
+    "@graphql-codegen/typescript-operations": "^4.6.1",
+    "@graphql-codegen/typescript-react-apollo": "^4.3.3",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@types/jest": "^30.0.0",
