@@ -1,0 +1,9 @@
+mutation UpdateCategory($id: ID!, $name: String, $color: String) {
+  updateCategory(id: $id, name: $name, color: $color) {
+    id
+    name
+    color
+    created_at
+    updated_at
+  }
+}
