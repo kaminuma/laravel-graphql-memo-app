@@ -160,7 +160,42 @@ php artisan test
 
 フロントエンドでGraphQL Code Generatorを活用して型安全な開発を行います。
 
+
 ### セットアップ手順
+
+このリポジトリは、GraphQL Code Generator の設定ファイル（`codegen.yml`）や `package.json` のスクリプトがすでに含まれています。
+
+1. **依存パッケージのインストール**
+```bash
+cd frontend
+npm install
+```
+
+2. **コード生成の実行**
+```bash
+npm run codegen
+```
+
+3. **生成されたコードの利用例**
+```typescript
+import { useGetTodosQuery } from '../generated/graphql';
+
+const { data, loading, error } = useGetTodosQuery({
+  variables: { /* クエリ変数 */ }
+});
+```
+
+> ⚡ クローン直後は `npm install` だけでOK！設定ファイルやスクリプトの再作成は不要です。
+
+この機能は開発の生産性向上と型の安全性確保に役立ちます。
+
+---
+
+## � GraphQL Codegen 設定内容メモ
+
+> このリポジトリは、下記のようにGraphQL Code Generatorの設定がすでに済んでいます。
+
+### 手動セットアップ手順（参考）
 
 1. **必要なパッケージをインストール**
 ```bash
@@ -168,14 +203,14 @@ cd frontend
 npm install @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations @graphql-codegen/typescript-react-apollo --save-dev
 ```
 
-2. **設定ファイル作成**
-```bash
-# frontend/codegen.yml ファイル作成
+2. **設定ファイル作成例**
+```yaml
+# frontend/codegen.yml
 schema:
   - 'http://localhost:8000/graphql':
       headers:
         Accept: 'application/json'
-documents: 
+documents:
   - './src/services/**/*.ts'
   - './src/graphql/**/*.graphql'
 generates:
@@ -190,32 +225,18 @@ generates:
       withHOC: false
 ```
 
-3. **package.jsonにスクリプト追加**
+3. **package.jsonにスクリプト追加例**
 ```json
 "scripts": {
   "codegen": "graphql-codegen --config codegen.yml"
 }
 ```
 
-4. **使用方法**
-```bash
-# コード生成実行
-npm run codegen
-
-# 生成されたコードをインポート
-import { useGetTodosQuery } from '../generated/graphql';
-
-// コンポーネント内で使用
-const { data, loading, error } = useGetTodosQuery({
-  variables: { /* クエリ変数 */ }
-});
-```
-
-この機能は開発の生産性向上と型の安全性確保に役立ちます。
+---
 
 ---
 
-## 👥 Contributors ✨
+## �👥 Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
