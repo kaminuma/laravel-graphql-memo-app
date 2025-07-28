@@ -5,7 +5,7 @@ import TodoList from '../components/TodoList/TodoList';
 import TodoForm from '../components/TodoForm/TodoForm';
 import { useAuth } from '../contexts/AuthContext';
 
-const TodoPage = () => {
+const TodoPage: React.FC = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
 
@@ -116,4 +116,4 @@ const TodoPage = () => {
   );
 };
 
-export default TodoPage; 
+export default TodoPage;

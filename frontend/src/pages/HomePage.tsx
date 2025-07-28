@@ -4,7 +4,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
-const HomePage = () => {
+const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
 
@@ -123,4 +123,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage; 
+export default HomePage;

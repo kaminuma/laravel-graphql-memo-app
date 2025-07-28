@@ -5,7 +5,7 @@ import StorageIcon from '@mui/icons-material/Storage';
 import ApiIcon from '@mui/icons-material/Api';
 import ReactIcon from '@mui/icons-material/IntegrationInstructions';
 
-const AboutPage = () => {
+const AboutPage: React.FC = () => {
   return (
     <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)', py: 4 }}>
       <Container maxWidth="md">
@@ -98,4 +98,4 @@ const AboutPage = () => {
   );
 };
 
-export default AboutPage; 
+export default AboutPage;

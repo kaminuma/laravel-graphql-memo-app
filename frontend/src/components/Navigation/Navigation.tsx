@@ -11,7 +11,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import HomeIcon from '@mui/icons-material/Home';
 import InfoIcon from '@mui/icons-material/Info';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -21,13 +20,13 @@ const navItems = [
   { path: '/about', label: 'About', icon: <InfoIcon sx={{ fontSize: 20, mr: 0.5 }} /> },
 ];
 
-const Navigation = () => {
+const Navigation: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, loading, logout } = useAuth();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  const handleMenu = (event) => {
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -112,7 +111,7 @@ const Navigation = () => {
                     }}
                   >
                     <Avatar sx={{ width: 32, height: 32, bgcolor: '#6366f1' }}>
-                      {user.name.charAt(0).toUpperCase()}
+                      {user.name!.charAt(0).toUpperCase()}
                     </Avatar>
                     <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' } }}>
                       {user.name}
@@ -181,4 +180,4 @@ const Navigation = () => {
   );
 };
 
-export default Navigation; 
+export default Navigation;
