@@ -7,7 +7,8 @@ import {
   Category,
   Priority,
   Todo,
-} from "../../generated/graphql";
+} from "../../../../generated/graphql";
+import { TodoFilters, TodoSortOptions } from "../../../../shared/types/filters";
 import {
   Card,
   Box,
@@ -38,10 +39,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
-import { TodoFilters, TodoSortOptions } from "../../types/filters";
-
-// React, Apollo, MUIなどの必要なライブラリをインポート
-// TODOリスト画面のメインコンポーネント
 const TodoList: React.FC = () => {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
@@ -81,7 +78,7 @@ const TodoList: React.FC = () => {
   const [deleteTodo, { loading: deleting }] = useDeleteTodoMutation({
     refetchQueries: [
       {
-        query: require("../../generated/graphql").GetTodosDocument,
+        query: require("../../../../generated/graphql").GetTodosDocument,
         variables: {
           completed: filters.completed,
           priority: filters.priority

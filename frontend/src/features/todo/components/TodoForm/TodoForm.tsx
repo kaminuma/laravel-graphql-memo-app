@@ -7,8 +7,8 @@ import {
   GetTodosDocument,
   Priority,
   Todo,
-} from "../../generated/graphql";
-import { useAuth } from "../../contexts/AuthContext";
+} from "../../../../generated/graphql";
+import { useAuth } from "../../../../shared/contexts/AuthContext";
 import {
   CreateTodoMutation,
   CreateTodoMutationVariables,
@@ -16,7 +16,7 @@ import {
   InputMaybe,
   UpdateTodoMutation,
   UpdateTodoMutationVariables,
-} from "../../generated/graphql";
+} from "../../../../generated/graphql";
 import {
   Card,
   Box,

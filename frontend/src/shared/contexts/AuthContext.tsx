@@ -6,7 +6,7 @@ import React, {
   ReactNode,
 } from "react";
 import { useApolloClient } from "@apollo/client";
-import { useGetMeQuery, useLogoutUserMutation } from "../generated/graphql";
+import { useGetMeQuery, useLogoutUserMutation } from "../../generated/graphql";
 
 interface User {
   id: number;

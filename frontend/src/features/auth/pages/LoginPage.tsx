@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useMutation } from "@apollo/client";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import {
   Card,
   Box,
@@ -12,53 +12,61 @@ import {
   Alert,
   Link as MuiLink,
 } from "@mui/material";
-import { useRegisterUserMutation } from "../generated/graphql";
-import { useAuth } from "../contexts/AuthContext";
+import { useLoginUserMutation } from "../../../generated/graphql";
+import { useAuth } from "../../../shared/contexts/AuthContext";
 
-const RegisterPage: React.FC = () => {
-  const [name, setName] = useState("");
+const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { refetchUser } = useAuth();
 
-  const [registerUser, { loading }] = useRegisterUserMutation();
+  const [loginUser, { loading }] = useLoginUserMutation();
+
+  // URLパラメータで登録成功メッセージを表示
+  useEffect(() => {
+    if (searchParams.get("registered") === "true") {
+      setSuccessMessage(
+        "アカウントが正常に作成されました。ログインしてください。"
+      );
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    if (!name.trim() || !email.trim() || !password || !passwordConfirmation) {
-      setError("すべての項目を入力してください");
-      return;
-    }
-
-    if (password !== passwordConfirmation) {
-      setError("パスワードが一致しません");
-      return;
-    }
-
-    if (password.length < 8) {
-      setError("パスワードは8文字以上で入力してください");
+    if (!email.trim() || !password.trim()) {
+      setError("メールアドレスとパスワードを入力してください");
       return;
     }
 
     try {
-      await registerUser({
+      console.log("ログイン処理開始:", { email: email.trim() });
+
+      const result = await loginUser({
         variables: {
-          name: name.trim(),
           email: email.trim(),
           password,
-          password_confirmation: passwordConfirmation,
         },
       });
 
-      // 登録成功後はログイン画面に遷移（成功メッセージ付き）
-      navigate("/login?registered=true");
+      console.log("ログイン結果:", result);
+
+      // 認証状態を更新
+      console.log("認証状態更新開始");
+      await refetchUser();
+      console.log("認証状態更新完了");
+
+      // 認証状態がセットされたら遷移
+      console.log("TODOページに遷移");
+      navigate("/todos");
     } catch (err: any) {
-      setError(err.message || "登録に失敗しました");
+      console.error("ログインエラー:", err);
+      setError(err.message || "ログインに失敗しました");
     }
   };
 
@@ -86,12 +94,18 @@ const RegisterPage: React.FC = () => {
       >
         <Stack spacing={3} alignItems="center">
           <Typography variant="h4" fontWeight={900} color="primary">
-            新規登録
+            ログイン
           </Typography>
 
           <Typography color="text.secondary" textAlign="center">
-            新しいアカウントを作成してTODOを管理しましょう
+            アカウントにログインしてTODOを管理しましょう
           </Typography>
+
+          {successMessage && (
+            <Alert severity="success" sx={{ width: "100%" }}>
+              {successMessage}
+            </Alert>
+          )}
 
           {error && (
             <Alert severity="error" sx={{ width: "100%" }}>
@@ -101,16 +115,6 @@ const RegisterPage: React.FC = () => {
 
           <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%" }}>
             <Stack spacing={3}>
-              <TextField
-                label="お名前"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                fullWidth
-                variant="outlined"
-                InputLabelProps={{ style: { fontWeight: 600 } }}
-              />
-
               <TextField
                 label="メールアドレス"
                 type="email"
@@ -131,18 +135,6 @@ const RegisterPage: React.FC = () => {
                 fullWidth
                 variant="outlined"
                 InputLabelProps={{ style: { fontWeight: 600 } }}
-                helperText="8文字以上で入力してください"
-              />
-
-              <TextField
-                label="パスワード（確認）"
-                type="password"
-                value={passwordConfirmation}
-                onChange={(e) => setPasswordConfirmation(e.target.value)}
-                required
-                fullWidth
-                variant="outlined"
-                InputLabelProps={{ style: { fontWeight: 600 } }}
               />
 
               <Button
@@ -158,14 +150,14 @@ const RegisterPage: React.FC = () => {
                     "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                 }}
               >
-                {loading ? <CircularProgress size={24} /> : "登録"}
+                {loading ? <CircularProgress size={24} /> : "ログイン"}
               </Button>
 
               <Box textAlign="center">
                 <Typography variant="body2" color="text.secondary">
-                  既にアカウントをお持ちの方は{" "}
-                  <MuiLink component={Link} to="/login" color="primary">
-                    ログイン
+                  アカウントをお持ちでない方は{" "}
+                  <MuiLink component={Link} to="/register" color="primary">
+                    新規登録
                   </MuiLink>
                 </Typography>
               </Box>
@@ -177,4 +169,4 @@ const RegisterPage: React.FC = () => {
   );
 };
 
-export default RegisterPage;
+export default LoginPage;

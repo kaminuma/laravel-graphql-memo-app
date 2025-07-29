@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useGetTodosQuery } from '../generated/graphql';
+import { useGetTodosQuery } from '../../../generated/graphql';
 import TodoForm from '../components/TodoForm/TodoForm';
 import {
   Container,
@@ -11,7 +11,7 @@ import {
   Alert,
   Button,
 } from '@mui/material';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../../shared/contexts/AuthContext';
 
 const TodoEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
