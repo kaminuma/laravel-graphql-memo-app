@@ -26,7 +26,7 @@ describe('新規登録機能 E2Eテスト', () => {
     cy.contains('ログイン').should('exist');
   });
 
-  it('パスワード確認が一致しない場合は登録できない', () => {
+  it('パスワードが一致しない場合は登録できない', () => {
     const email = `registeruser_${Date.now()}@example.com`;
     
     cy.visit('/register');

@@ -1,16 +1,23 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
-import { GET_TODOS } from '../services/queries';
+import { useGetTodosQuery } from '../generated/graphql';
 import TodoForm from '../components/TodoForm/TodoForm';
-import { Container, Paper, Box, Typography, CircularProgress, Alert, Button } from '@mui/material';
+import {
+  Container,
+  Paper,
+  Box,
+  Typography,
+  CircularProgress,
+  Alert,
+  Button,
+} from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 
-const TodoEditPage = () => {
-  const { id } = useParams();
+const TodoEditPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { loading, error, data } = useQuery(GET_TODOS);
+  const { loading, error, data } = useGetTodosQuery();
 
   if (authLoading) {
     return (
@@ -25,7 +32,8 @@ const TodoEditPage = () => {
       <Box
         sx={{
           minHeight: '100vh',
-          background: 'linear-gradient(120deg, #f8fafc 0%, #e0e7ff 40%, #c7d2fe 100%)',
+          background:
+            'linear-gradient(120deg, #f8fafc 0%, #e0e7ff 40%, #c7d2fe 100%)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -48,7 +56,14 @@ const TodoEditPage = () => {
           <Typography variant="h5" sx={{ mb: 3, fontWeight: 700 }}>
             ✨ TODO App
           </Typography>
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 2,
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+            }}
+          >
             <Button
               variant="contained"
               onClick={() => navigate('/login')}
@@ -90,7 +105,9 @@ const TodoEditPage = () => {
   if (error) {
     return (
       <Box py={8} textAlign="center">
-        <Alert severity="error" sx={{ mb: 2 }}>エラーが発生しました: {error.message}</Alert>
+        <Alert severity="error" sx={{ mb: 2 }}>
+          エラーが発生しました: {error.message}
+        </Alert>
       </Box>
     );
   }
@@ -108,7 +125,14 @@ const TodoEditPage = () => {
 
   return (
     <Container maxWidth="sm" sx={{ py: 8 }}>
-      <Paper elevation={4} sx={{ p: { xs: 2, sm: 4 }, borderRadius: 4, background: 'rgba(255,255,255,0.98)' }}>
+      <Paper
+        elevation={4}
+        sx={{
+          p: { xs: 2, sm: 4 },
+          borderRadius: 4,
+          background: 'rgba(255,255,255,0.98)',
+        }}
+      >
         <TodoForm
           mode="edit"
           initialValues={todo}
@@ -120,4 +144,4 @@ const TodoEditPage = () => {
   );
 };
 
-export default TodoEditPage; 
+export default TodoEditPage;

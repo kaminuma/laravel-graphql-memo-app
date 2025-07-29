@@ -1,11 +1,17 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useQuery, useMutation, useApolloClient } from '@apollo/client';
-import { GET_ME, LOGOUT_USER } from '../services/auth';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { useApolloClient } from "@apollo/client";
+import { useGetMeQuery, useLogoutUserMutation } from "../generated/graphql";
 
 interface User {
-  id: string;
-  name: string;
-  email: string;
+  id: number;
+  name?: string | null;
+  email?: string | null;
 }
 
 interface AuthContextType {
@@ -20,7 +26,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -33,11 +39,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const client = useApolloClient();
 
-  const { data, loading, error, refetch } = useQuery(GET_ME, {
-    errorPolicy: 'ignore',
+  const { data, loading, error, refetch } = useGetMeQuery({
+    errorPolicy: "ignore",
   });
 
-  const [logoutMutation] = useMutation(LOGOUT_USER);
+  const [logoutMutation] = useLogoutUserMutation();
 
   useEffect(() => {
     if (data?.me) {
@@ -53,7 +59,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(null);
       await client.clearStore();
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     }
   };
 
@@ -66,7 +72,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(null);
       }
     } catch (error) {
-      console.error('refetch error:', error);
+      console.error("refetch error:", error);
       setUser(null);
     }
   };
@@ -79,4 +85,4 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}; 
+};

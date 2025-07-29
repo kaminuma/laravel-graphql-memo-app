@@ -25,18 +25,6 @@ export interface Todo {
   updated_at: string;
 }
 
-export interface TodoFilters {
-  priority?: Priority | null;
-  deadlineStatus?: 'overdue' | 'due_today' | 'due_this_week' | null;
-  completed?: boolean | null;
-  categoryId?: string | null;
-}
-
-export interface TodoSortOptions {
-  field: 'priority' | 'deadline' | 'created_at';
-  direction: 'asc' | 'desc';
-}
-
 export interface CreateTodoInput {
   title: string;
   description?: string;

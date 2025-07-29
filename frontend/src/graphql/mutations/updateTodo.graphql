@@ -1,0 +1,36 @@
+mutation UpdateTodo(
+  $id: ID!
+  $title: String
+  $description: String
+  $completed: Boolean
+  $deadline: String
+  $priority: Priority
+  $category_id: ID
+) {
+  updateTodo(
+    id: $id
+    title: $title
+    description: $description
+    completed: $completed
+    deadline: $deadline
+    priority: $priority
+    category_id: $category_id
+  ) {
+    id
+    title
+    description
+    completed
+    user_id
+    deadline
+    priority
+    deadline_status
+    category_id
+    category {
+      id
+      name
+      color
+    }
+    created_at
+    updated_at
+  }
+}

@@ -9,7 +9,7 @@ import AboutPage from './pages/AboutPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import Navigation from './components/Navigation/Navigation';
-import TodoEditPage from './pages/TodoEditPage.jsx';
+import TodoEditPage from './pages/TodoEditPage';
 import { AuthProvider } from './contexts/AuthContext';
 
 // 環境に応じてGraphQLエンドポイントを設定

@@ -1,0 +1,9 @@
+mutation CreateCategory($name: String!, $color: String) {
+  createCategory(name: $name, color: $color) {
+    id
+    name
+    color
+    created_at
+    updated_at
+  }
+}
