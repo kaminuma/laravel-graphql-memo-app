@@ -4,7 +4,7 @@ schema:
         Accept: "application/json"
 documents:
   - "./src/services/**/*.ts"
-  - "./src/graphql/**/*.graphql"
+  - "./src/features/**/graphql/**/*.graphql"
 generates:
   src/generated/graphql.ts:
     plugins:

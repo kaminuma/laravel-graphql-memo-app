@@ -1,4 +1,4 @@
-import { Priority as GqlPriority } from "../generated/graphql";
+import { Priority as GqlPriority } from "../../generated/graphql";
 
 export type Priority = "high" | "medium" | "low";
 
