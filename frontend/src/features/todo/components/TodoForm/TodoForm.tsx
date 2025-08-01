@@ -7,6 +7,7 @@ import {
   GetTodosDocument,
   Priority,
   Todo,
+  GetTodosQuery,
 } from "../../../../generated/graphql";
 import { useAuth } from "../../../../shared/contexts/AuthContext";
 import {
@@ -73,7 +74,41 @@ const TodoForm: React.FC<TodoFormProps> = ({
   const categories = categoriesData?.categories || [];
 
   const [createTodo, { loading: creating }] = useCreateTodoMutation({
-    refetchQueries: [{ query: GetTodosDocument }],
+    update(cache, { data }) {
+      const newTodo = data?.createTodo;
+      if (newTodo) {
+        // Read the current list of todos from the cache for the default query
+        const existingTodosData = cache.readQuery<GetTodosQuery>({
+          query: GetTodosDocument,
+          variables: {
+            completed: null,
+            priority: null,
+            deadline_status: null,
+            sort_by: "created_at",
+            sort_direction: "desc",
+            category_id: null,
+          },
+        });
+
+        if (existingTodosData && existingTodosData.todos) {
+          // Write the updated list back to the cache
+          cache.writeQuery<GetTodosQuery>({
+            query: GetTodosDocument,
+            variables: {
+              completed: null,
+              priority: null,
+              deadline_status: null,
+              sort_by: "created_at",
+              sort_direction: "desc",
+              category_id: null,
+            },
+            data: {
+              todos: [newTodo, ...existingTodosData.todos],
+            },
+          });
+        }
+      }
+    },
   });
   const [updateTodo, { loading: updating }] = useUpdateTodoMutation({
     refetchQueries: [{ query: GetTodosDocument }],

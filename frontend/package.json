@@ -28,7 +28,7 @@
     "test:e2e": "cypress run",
     "test:e2e:open": "cypress open",
     "test:e2e:auth": "cypress run --spec 'cypress/e2e/auth/**/*.cy.js'",
-    "test:e2e:todo": "cypress run --spec 'cypress/e2e/todo/**/*.cy.js'",
+    "test:e2e:todo": "cypress run --spec 'cypress/e2e/todo/**/*.cy.ts'",
     "test:all": "npm run test && npm run test:e2e",
     "test:e2e:cleanup": "cypress run && cd ../server && php artisan migrate:fresh --seed",
     "test:e2e:cleanup:docker": "cypress run && docker-compose exec app php artisan migrate:fresh --seed",
