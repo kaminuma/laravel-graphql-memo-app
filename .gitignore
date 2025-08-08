@@ -69,6 +69,11 @@ server/bootstrap/cache/*
 frontend/build/
 frontend/dist/ 
 
+# docs
+docs
+
 #AI
 .kiro
 .cursor
+CLAUDE.md
+.serena
