@@ -11,7 +11,7 @@ import {
   Alert,
   Button,
 } from '@mui/material';
-import { useAuth } from '../../../shared/contexts/AuthContext';
+import { useAuth } from '../../../hooks/AuthContext';
 
 const TodoEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();

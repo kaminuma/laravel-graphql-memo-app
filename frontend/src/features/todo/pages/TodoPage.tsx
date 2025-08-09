@@ -3,7 +3,7 @@ import { Container, Grid, Paper, Box, Typography, Button, Alert } from '@mui/mat
 import { useNavigate } from 'react-router-dom';
 import TodoList from '../components/TodoList/TodoList';
 import TodoForm from '../components/TodoForm/TodoForm';
-import { useAuth } from '../../../shared/contexts/AuthContext';
+import { useAuth } from '../../../hooks/AuthContext';
 
 const TodoPage: React.FC = () => {
   const navigate = useNavigate();

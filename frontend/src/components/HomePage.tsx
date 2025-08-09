@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Paper, Stack, Typography, Button, Box } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../shared/contexts/AuthContext';
+import { useAuth } from '../hooks/AuthContext';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();

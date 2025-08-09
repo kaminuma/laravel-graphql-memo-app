@@ -13,7 +13,7 @@ import {
   Link as MuiLink,
 } from "@mui/material";
 import { useRegisterUserMutation } from "../../../generated/graphql";
-import { useAuth } from "../../../shared/contexts/AuthContext";
+import { useAuth } from "../../../hooks/AuthContext";
 
 const RegisterPage: React.FC = () => {
   const [name, setName] = useState("");

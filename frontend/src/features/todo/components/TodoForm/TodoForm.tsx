@@ -9,7 +9,7 @@ import {
   Todo,
   GetTodosQuery,
 } from "../../../../generated/graphql";
-import { useAuth } from "../../../../shared/contexts/AuthContext";
+import { useAuth } from "../../../../hooks/AuthContext";
 import {
   CreateTodoMutation,
   CreateTodoMutationVariables,

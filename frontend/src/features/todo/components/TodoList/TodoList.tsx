@@ -8,7 +8,7 @@ import {
   Priority,
   Todo,
 } from "../../../../generated/graphql";
-import { TodoFilters, TodoSortOptions } from "../../../../shared/types/filters";
+import { TodoFilters, TodoSortOptions } from "../../../../types";
 import {
   Card,
   Box,
