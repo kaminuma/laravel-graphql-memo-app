@@ -3,14 +3,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider, createTheme, CssBaseline, Container } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-import HomePage from './shared/pages/HomePage';
+import HomePage from './components/HomePage';
 import TodoPage from './features/todo/pages/TodoPage';
-import AboutPage from './shared/pages/AboutPage';
+import AboutPage from './components/AboutPage';
 import LoginPage from './features/auth/pages/LoginPage';
 import RegisterPage from './features/auth/pages/RegisterPage';
-import Navigation from './shared/components/Navigation/Navigation';
+import Navigation from './components/Navigation/Navigation';
 import TodoEditPage from './features/todo/pages/TodoEditPage';
-import { AuthProvider } from './shared/contexts/AuthContext';
+import { AuthProvider } from './hooks/AuthContext';
 
 // 環境に応じてGraphQLエンドポイントを設定
 const getGraphQLEndpoint = () => {

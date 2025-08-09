@@ -12,7 +12,7 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import HomeIcon from '@mui/icons-material/Home';
 import InfoIcon from '@mui/icons-material/Info';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/AuthContext';
 
 const navItems = [
   { path: '/', label: 'ホーム', icon: <HomeIcon sx={{ fontSize: 20, mr: 0.5 }} /> },

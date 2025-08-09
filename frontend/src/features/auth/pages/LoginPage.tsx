@@ -13,7 +13,7 @@ import {
   Link as MuiLink,
 } from "@mui/material";
 import { useLoginUserMutation } from "../../../generated/graphql";
-import { useAuth } from "../../../shared/contexts/AuthContext";
+import { useAuth } from "../../../hooks/AuthContext";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
