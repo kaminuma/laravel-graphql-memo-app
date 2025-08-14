@@ -227,6 +227,11 @@ export type LogoutUserMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutUserMutation = { __typename?: 'Mutation', logout?: boolean | null };
 
+export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, name?: string | null, email?: string | null } | null };
+
 export type CreateCategoryMutationVariables = Exact<{
   name: Scalars['String']['input'];
   color?: InputMaybe<Scalars['String']['input']>;
@@ -282,11 +287,6 @@ export type UpdateTodoMutationVariables = Exact<{
 
 
 export type UpdateTodoMutation = { __typename?: 'Mutation', updateTodo?: { __typename?: 'Todo', id: string, title: string, description?: string | null, completed: boolean, user_id: number, deadline?: string | null, priority: Priority, deadline_status: string, category_id?: number | null, created_at?: string | null, updated_at?: string | null, category?: { __typename?: 'Category', id: string, name: string, color?: string | null } | null } | null };
-
-export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetMeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, name?: string | null, email?: string | null } | null };
 
 export type GetCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -390,6 +390,39 @@ export function useLogoutUserMutation(baseOptions?: Apollo.MutationHookOptions<L
 export type LogoutUserMutationHookResult = ReturnType<typeof useLogoutUserMutation>;
 export type LogoutUserMutationResult = Apollo.MutationResult<LogoutUserMutation>;
 export type LogoutUserMutationOptions = Apollo.BaseMutationOptions<LogoutUserMutation, LogoutUserMutationVariables>;
+export const GetMeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetMe"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode;
+
+/**
+ * __useGetMeQuery__
+ *
+ * To run a query within a React component, call `useGetMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetMeQuery(baseOptions?: Apollo.QueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
+      }
+export function useGetMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
+        }
+export function useGetMeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
+        }
+export type GetMeQueryHookResult = ReturnType<typeof useGetMeQuery>;
+export type GetMeLazyQueryHookResult = ReturnType<typeof useGetMeLazyQuery>;
+export type GetMeSuspenseQueryHookResult = ReturnType<typeof useGetMeSuspenseQuery>;
+export type GetMeQueryResult = Apollo.QueryResult<GetMeQuery, GetMeQueryVariables>;
 export const CreateCategoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateCategory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"color"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createCategory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"color"},"value":{"kind":"Variable","name":{"kind":"Name","value":"color"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]}}]} as unknown as DocumentNode;
 export type CreateCategoryMutationFn = Apollo.MutationFunction<CreateCategoryMutation, CreateCategoryMutationVariables>;
 
@@ -566,39 +599,6 @@ export function useUpdateTodoMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateTodoMutationHookResult = ReturnType<typeof useUpdateTodoMutation>;
 export type UpdateTodoMutationResult = Apollo.MutationResult<UpdateTodoMutation>;
 export type UpdateTodoMutationOptions = Apollo.BaseMutationOptions<UpdateTodoMutation, UpdateTodoMutationVariables>;
-export const GetMeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetMe"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode;
-
-/**
- * __useGetMeQuery__
- *
- * To run a query within a React component, call `useGetMeQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetMeQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetMeQuery(baseOptions?: Apollo.QueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
-      }
-export function useGetMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
-        }
-export function useGetMeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
-        }
-export type GetMeQueryHookResult = ReturnType<typeof useGetMeQuery>;
-export type GetMeLazyQueryHookResult = ReturnType<typeof useGetMeLazyQuery>;
-export type GetMeSuspenseQueryHookResult = ReturnType<typeof useGetMeSuspenseQuery>;
-export type GetMeQueryResult = Apollo.QueryResult<GetMeQuery, GetMeQueryVariables>;
 export const GetCategoriesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCategories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"categories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]}}]} as unknown as DocumentNode;
 
 /**
