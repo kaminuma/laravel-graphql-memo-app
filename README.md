@@ -244,7 +244,7 @@ generates:
 
 ---
 
-## test1
+test
 
 ## �👥 Contributors ✨
 
