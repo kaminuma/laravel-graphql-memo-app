@@ -74,6 +74,10 @@ class TodoResolver
     // createTodoミューテーション
     public function createTodo($root, array $args)
     {
+        $user = Auth::user();
+        if (!$user) {
+            throw new Error('Unauthorized');
+        }
         $deadline = null;
         if (isset($args['deadline']) && !empty($args['deadline'])) {
             try {
@@ -89,19 +93,39 @@ class TodoResolver
         $todo = Todo::create([
             'title' => $args['title'],
             'description' => $args['description'] ?? null,
-            'user_id' => (int) $args['user_id'],
+            'user_id' => $user->id,
             'completed' => false,
             'deadline' => $deadline,
             'priority' => $priority,
-            'category_id' => isset($args['category_id']) ? (int) $args['category_id'] : null
+            'category_id' => null
         ]);
+        
+        // category_idが指定されている場合の処理
+        if (isset($args['category_id']) && !empty($args['category_id'])) {
+            $categoryId = (int) $args['category_id'];
+            if (\App\Models\Category::where('id', $categoryId)->exists()) {
+                $todo->category_id = $categoryId;
+                $todo->save();
+            }
+        }
+        
         return $todo;
     }
 
     // updateTodoミューテーション
     public function updateTodo($root, array $args)
     {
+        $user = Auth::user();
+        if (!$user) {
+            throw new Error('Unauthorized');
+        }
+        
         $todo = Todo::findOrFail((int) $args['id']);
+        
+        // 自分のTodoかチェック
+        if ($todo->user_id !== $user->id) {
+            throw new Error('You can only update your own todos');
+        }
         $updateData = [];
         if (isset($args['title'])) {
             $updateData['title'] = $args['title'];
@@ -131,7 +155,16 @@ class TodoResolver
             $updateData['priority'] = $priority;
         }
         if (isset($args['category_id'])) {
-            $updateData['category_id'] = !empty($args['category_id']) ? (int) $args['category_id'] : null;
+            if (!empty($args['category_id'])) {
+                // カテゴリーの存在チェック
+                $categoryId = (int) $args['category_id'];
+                if (!\App\Models\Category::where('id', $categoryId)->exists()) {
+                    throw new Error('Category not found');
+                }
+                $updateData['category_id'] = $categoryId;
+            } else {
+                $updateData['category_id'] = null;
+            }
         }
         $todo->update($updateData);
         return $todo;
@@ -140,7 +173,17 @@ class TodoResolver
     // deleteTodoミューテーション
     public function deleteTodo($root, array $args)
     {
+        $user = Auth::user();
+        if (!$user) {
+            throw new Error('Unauthorized');
+        }
+        
         $todo = Todo::findOrFail((int) $args['id']);
+        
+        // 自分のTodoかチェック
+        if ($todo->user_id !== $user->id) {
+            throw new Error('You can only delete your own todos');
+        }
         $deleted = $todo->delete();
         return $deleted;
     }
