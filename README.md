@@ -1,14 +1,16 @@
-# ✨ Laravel + GraphQL + React (Material UI) TODOアプリ 📝
+# ✨ Laravel + GraphQL + React (Material UI) TODO アプリ 📝
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ---
 
 ## 🚀 概要
 
-このプロジェクトは、Laravel（バックエンド）・GraphQL API・React（Material UI, TypeScript）によるモダンなTODOアプリです。
+このプロジェクトは、Laravel（バックエンド）・GraphQL API・React（Material UI, TypeScript）によるモダンな TODO アプリです。
 
 ---
 
@@ -17,21 +19,21 @@
 このアプリは「**みんなでオープンに開発する**」ことを目的に作成しています。  
 もともとはバイブコーディングで作成した機能をベースに、今後もどんどん新しい機能を追加していく予定です。
 
-💬 誰でも気軽にIssueやPull Requestを送ってください！  
+💬 誰でも気軽に Issue や Pull Request を送ってください！  
 📦 ある程度の機能が揃った段階で正式リリースを予定しています。
 
 みなさんのご参加・ご貢献をお待ちしています！
 
-- 🔧 バックエンド: Laravel + rebing/graphql-laravel  
-- 🎨 フロントエンド: React + TypeScript + Material UI + Apollo Client  
-- 🗄️ DB: MySQL（Dockerコンテナ）
+- 🔧 バックエンド: Laravel + rebing/graphql-laravel
+- 🎨 フロントエンド: React + TypeScript + Material UI + Apollo Client
+- 🗄️ DB: MySQL（Docker コンテナ）
 
 ---
 
 ## 📦 必要なもの
 
-- 🐳 Docker / Docker Compose  
-- 🟢 Node.js（開発時のみ、Docker内で完結も可）  
+- 🐳 Docker / Docker Compose
+- 🟢 Node.js（開発時のみ、Docker 内で完結も可）
 - 🧰 Git
 
 ---
@@ -42,7 +44,8 @@
    ```bash
    git clone <このリポジトリのURL>
    cd laravel-graphql-memo-app
-以下は、絵文字付きで装飾された `README.md` の後半部分（手順・起動方法・テスト・Contributors）をマークダウン形式で再構成したものです。元の構成は変えず、絵文字のみ追加しています。
+   以下は、絵文字付きで装飾された `README.md` の後半部分（手順・起動方法・テスト・Contributors）をマークダウン形式で再構成したものです。元の構成は変えず、絵文字のみ追加しています。
+   ```
 
 ---
 
@@ -57,7 +60,7 @@ cp server/.env.example server/.env
 
 ※ 必要に応じて `.env` を編集してください。
 
-### 📦 Dockerコンテナの起動
+### 📦 Docker コンテナの起動
 
 ```bash
 docker-compose up -d
@@ -81,7 +84,7 @@ docker-compose exec backend php artisan key:generate
 docker-compose exec backend php artisan config:cache
 ```
 
-### 🗃️ DBマイグレーション・シーディング（初回のみ）
+### 🗃️ DB マイグレーション・シーディング（初回のみ）
 
 ```bash
 docker-compose exec backend php artisan migrate --seed
@@ -97,22 +100,22 @@ docker-compose exec frontend npm install
 
 ## ▶️ 起動方法
 
-* 🔌 **バックエンドAPI**: [http://localhost:8000/graphql](http://localhost:8000/graphql)
-* 🖥️ **フロントエンド**: [http://localhost:3000](http://localhost:3000)
+- 🔌 **バックエンド API**: [http://localhost:8000/graphql](http://localhost:8000/graphql)
+- 🖥️ **フロントエンド**: [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 🛠️ MySQL接続情報（外部ツール用）
+## 🛠️ MySQL 接続情報（外部ツール用）
 
-* **Host**: `localhost`
-* **Port**: `3306`
-* **User**: `todo_user`
-* **Password**: `todo_password`
-* **Database**: `todo_app`
+- **Host**: `localhost`
+- **Port**: `3306`
+- **User**: `todo_user`
+- **Password**: `todo_password`
+- **Database**: `todo_app`
 
 💡 `.env` ファイルで `DB_HOST_PORT` を変更することでポート競合回避が可能です。
 
-例：`.env` に `DB_HOST_PORT=13306` と設定すれば、`localhost:13306` でMySQLに接続できます。
+例：`.env` に `DB_HOST_PORT=13306` と設定すれば、`localhost:13306` で MySQL に接続できます。
 
 ---
 
@@ -125,7 +128,7 @@ cd frontend
 npm test
 ```
 
-### 🧩 E2Eテスト（Cypress）
+### 🧩 E2E テスト（Cypress）
 
 ```bash
 # フロントエンドディレクトリに移動
@@ -158,34 +161,38 @@ php artisan test
 
 ## 🔧 GraphQL Codegen 活用ガイド
 
-フロントエンドでGraphQL Code Generatorを活用して型安全な開発を行います。
-
+フロントエンドで GraphQL Code Generator を活用して型安全な開発を行います。
 
 ### セットアップ手順
 
 このリポジトリは、GraphQL Code Generator の設定ファイル（`codegen.yml`）や `package.json` のスクリプトがすでに含まれています。
 
 1. **依存パッケージのインストール**
+
 ```bash
 cd frontend
 npm install
 ```
 
 2. **コード生成の実行**
+
 ```bash
 npm run codegen
 ```
 
 3. **生成されたコードの利用例**
+
 ```typescript
-import { useGetTodosQuery } from '../generated/graphql';
+import { useGetTodosQuery } from "../generated/graphql";
 
 const { data, loading, error } = useGetTodosQuery({
-  variables: { /* クエリ変数 */ }
+  variables: {
+    /* クエリ変数 */
+  },
 });
 ```
 
-> ⚡ クローン直後は `npm install` だけでOK！設定ファイルやスクリプトの再作成は不要です。
+> ⚡ クローン直後は `npm install` だけで OK！設定ファイルやスクリプトの再作成は不要です。
 
 この機能は開発の生産性向上と型の安全性確保に役立ちます。
 
@@ -193,39 +200,42 @@ const { data, loading, error } = useGetTodosQuery({
 
 ## � GraphQL Codegen 設定内容メモ
 
-> このリポジトリは、下記のようにGraphQL Code Generatorの設定がすでに済んでいます。
+> このリポジトリは、下記のように GraphQL Code Generator の設定がすでに済んでいます。
 
 ### 手動セットアップ手順（参考）
 
 1. **必要なパッケージをインストール**
+
 ```bash
 cd frontend
 npm install @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations @graphql-codegen/typescript-react-apollo --save-dev
 ```
 
 2. **設定ファイル作成例**
+
 ```yaml
 # frontend/codegen.yml
 schema:
-  - 'http://localhost:8000/graphql':
+  - "http://localhost:8000/graphql":
       headers:
-        Accept: 'application/json'
+        Accept: "application/json"
 documents:
-  - './src/services/**/*.ts'
-  - './src/graphql/**/*.graphql'
+  - "./src/services/**/*.ts"
+  - "./src/graphql/**/*.graphql"
 generates:
   src/generated/graphql.tsx:
     plugins:
-      - 'typescript'
-      - 'typescript-operations'
-      - 'typescript-react-apollo'
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
     config:
       withHooks: true
       withComponent: false
       withHOC: false
 ```
 
-3. **package.jsonにスクリプト追加例**
+3. **package.json にスクリプト追加例**
+
 ```json
 "scripts": {
   "codegen": "graphql-codegen --config codegen.yml"
@@ -234,7 +244,7 @@ generates:
 
 ---
 
----
+## test1
 
 ## �👥 Contributors ✨
 
