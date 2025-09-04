@@ -89,4 +89,99 @@ class Todo extends Model
     {
         $this->attributes['priority'] = strtolower($value);
     }
+
+    /**
+     * Scope: Filter by user
+     */
+    public function scopeForUser($query, $userId)
+    {
+        return $query->where('user_id', $userId);
+    }
+
+    /**
+     * Scope: Filter by completion status
+     */
+    public function scopeCompleted($query, ?bool $completed = null)
+    {
+        if ($completed !== null) {
+            return $query->where('completed', $completed);
+        }
+        return $query;
+    }
+
+    /**
+     * Scope: Filter by priority
+     */
+    public function scopeByPriority($query, ?string $priority = null)
+    {
+        if ($priority) {
+            // GraphQLから来る大文字の値を小文字に変換
+            return $query->where('priority', strtolower($priority));
+        }
+        return $query;
+    }
+
+    /**
+     * Scope: Filter by deadline status
+     * Implement deadline filtering logic
+     */
+    public function scopeByDeadlineStatus($query, ?string $status = null)
+    {
+        if ($status) {
+            $now = now();
+            if ($status === 'overdue') {
+                return $query->where('deadline', '<', $now)->where('completed', false);
+            } elseif ($status === 'due_today') {
+                return $query->whereDate('deadline', $now->toDateString())->where('completed', false);
+            } elseif ($status === 'due_this_week') {
+                $weekEnd = $now->copy()->addWeek();
+                return $query->whereBetween('deadline', [$now, $weekEnd])->where('completed', false);
+            } elseif ($status === 'normal') {
+                return $query->where(function ($q) use ($now) {
+                    $q->whereNull('deadline')
+                      ->orWhere('deadline', '>', $now)
+                      ->orWhere('completed', true);
+                });
+            }
+        }
+        return $query;
+    }
+
+    /**
+     * Scope: Apply sorting with proper null handling
+     */
+    public function scopeApplySorting($query, string $sortBy = 'created_at', string $sortDirection = 'desc')
+    {
+        // Validate sort parameters
+        $validSortFields = ['priority', 'deadline', 'created_at'];
+        $validSortDirections = ['asc', 'desc'];
+
+        if (!in_array($sortBy, $validSortFields)) {
+            $sortBy = 'created_at';
+        }
+        if (!in_array($sortDirection, $validSortDirections)) {
+            $sortDirection = 'desc';
+        }
+
+        // Special handling for priority sorting
+        if ($sortBy === 'priority') {
+            $query->orderByRaw("FIELD(priority, 'high', 'medium', 'low') " . ($sortDirection === 'asc' ? 'ASC' : 'DESC'));
+        } elseif ($sortBy === 'deadline') {
+            // Handle null values for deadline sorting
+            if ($sortDirection === 'asc') {
+                $query->orderByRaw('deadline IS NULL, deadline ASC');
+            } else {
+                $query->orderByRaw('deadline IS NULL, deadline DESC');
+            }
+        } else {
+            $query->orderBy($sortBy, $sortDirection);
+        }
+
+        // Secondary sort for consistent ordering
+        if ($sortBy !== 'created_at') {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        return $query;
+    }
 }
