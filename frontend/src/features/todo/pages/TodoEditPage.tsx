@@ -1,7 +1,7 @@
-import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useGetTodosQuery } from "../../../generated/graphql";
-import TodoForm from "../components/TodoForm/TodoForm";
+import React from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useGetTodosQuery } from '../../../generated/graphql';
+import TodoForm from '../components/TodoForm/TodoForm';
 import {
   Container,
   Paper,
@@ -10,8 +10,8 @@ import {
   CircularProgress,
   Alert,
   Button,
-} from "@mui/material";
-import { useAuth } from "../../../hooks/AuthContext";
+} from '@mui/material';
+import { useAuth } from '../../../hooks/AuthContext';
 
 const TodoEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,23 +31,23 @@ const TodoEditPage: React.FC = () => {
     return (
       <Box
         sx={{
-          minHeight: "100vh",
+          minHeight: '100vh',
           background:
-            "linear-gradient(120deg, #f8fafc 0%, #e0e7ff 40%, #c7d2fe 100%)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+            'linear-gradient(120deg, #f8fafc 0%, #e0e7ff 40%, #c7d2fe 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           p: 2,
         }}
       >
         <Paper
           elevation={6}
           sx={{
-            background: "rgba(255,255,255,0.95)",
+            background: 'rgba(255,255,255,0.95)',
             borderRadius: 6,
             p: 4,
             maxWidth: 500,
-            textAlign: "center",
+            textAlign: 'center',
           }}
         >
           <Alert severity="info" sx={{ mb: 3 }}>
@@ -58,17 +58,17 @@ const TodoEditPage: React.FC = () => {
           </Typography>
           <Box
             sx={{
-              display: "flex",
+              display: 'flex',
               gap: 2,
-              justifyContent: "center",
-              flexWrap: "wrap",
+              justifyContent: 'center',
+              flexWrap: 'wrap',
             }}
           >
             <Button
               variant="contained"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate('/login')}
               sx={{
-                background: "linear-gradient(135deg, #6366f1 0%, #818cf8 100%)",
+                background: 'linear-gradient(135deg, #6366f1 0%, #818cf8 100%)',
                 fontWeight: 600,
               }}
             >
@@ -76,14 +76,14 @@ const TodoEditPage: React.FC = () => {
             </Button>
             <Button
               variant="outlined"
-              onClick={() => navigate("/register")}
+              onClick={() => navigate('/register')}
               sx={{
-                borderColor: "#6366f1",
-                color: "#6366f1",
+                borderColor: '#6366f1',
+                color: '#6366f1',
                 fontWeight: 600,
-                "&:hover": {
-                  borderColor: "#818cf8",
-                  backgroundColor: "rgba(99, 102, 241, 0.04)",
+                '&:hover': {
+                  borderColor: '#818cf8',
+                  backgroundColor: 'rgba(99, 102, 241, 0.04)',
                 },
               }}
             >
@@ -116,7 +116,7 @@ const TodoEditPage: React.FC = () => {
   if (!todo) {
     return (
       <Box py={8} textAlign="center">
-        <Paper sx={{ p: 4, maxWidth: 500, mx: "auto" }} elevation={3}>
+        <Paper sx={{ p: 4, maxWidth: 500, mx: 'auto' }} elevation={3}>
           <Typography>該当するTODOが見つかりません</Typography>
         </Paper>
       </Box>
@@ -130,14 +130,14 @@ const TodoEditPage: React.FC = () => {
         sx={{
           p: { xs: 2, sm: 4 },
           borderRadius: 4,
-          background: "rgba(255,255,255,0.98)",
+          background: 'rgba(255,255,255,0.98)',
         }}
       >
         <TodoForm
           mode="edit"
           initialValues={todo}
-          onSuccess={() => navigate("/todos")}
-          onCancel={() => navigate("/todos")}
+          onSuccess={() => navigate('/todos')}
+          onCancel={() => navigate('/todos')}
         />
       </Paper>
     </Container>
