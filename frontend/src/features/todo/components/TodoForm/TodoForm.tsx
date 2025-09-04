@@ -142,7 +142,6 @@ const TodoForm: React.FC<TodoFormProps> = ({
           variables: {
             title: title.trim(),
             description: description.trim(),
-            user_id: user.id.toString(),
             deadline: deadline || null,
             priority: toPriorityEnum(priority),
             category_id: categoryId || null,

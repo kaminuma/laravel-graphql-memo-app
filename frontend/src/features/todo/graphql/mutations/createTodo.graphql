@@ -1,7 +1,6 @@
 mutation CreateTodo(
   $title: String!
   $description: String
-  $user_id: ID!
   $deadline: String
   $priority: Priority
   $category_id: ID
@@ -9,7 +8,6 @@ mutation CreateTodo(
   createTodo(
     title: $title
     description: $description
-    user_id: $user_id
     deadline: $deadline
     priority: $priority
     category_id: $category_id
