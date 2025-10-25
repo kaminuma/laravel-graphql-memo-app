@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # MySQL Database
@@ -37,6 +37,7 @@ services:
       - DB_DATABASE=${DB_DATABASE}
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
+      - XDEBUG_MODE=debug
     depends_on:
       - mysql
     networks:
