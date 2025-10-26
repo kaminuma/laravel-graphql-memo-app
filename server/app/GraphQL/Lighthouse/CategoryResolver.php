@@ -7,18 +7,6 @@ use GraphQL\Error\Error;
 
 class CategoryResolver
 {
-    // categoriesクエリ
-    public function categories($root, array $args)
-    {
-        return Category::orderBy('name', 'asc')->get();
-    }
-
-    // categoryクエリ
-    public function category($root, array $args)
-    {
-        return Category::findOrFail((int) $args['id']);
-    }
-
     // createCategoryミューテーション
     public function createCategory($root, array $args)
     {
