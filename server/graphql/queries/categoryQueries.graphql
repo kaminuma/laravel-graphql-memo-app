@@ -1,4 +1,4 @@
 extend type Query {
-    categories: [Category!]! @all(orderBy: [{ column: "name", order: ASC }])
+    categories: [Category!]! @all @orderBy(column: "name", order: ASC)
     category(id: ID! @eq): Category @find
 }
