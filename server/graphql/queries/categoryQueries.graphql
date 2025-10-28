@@ -1,4 +1,4 @@
 extend type Query {
-  categories: [Category!]! @field(resolver: "App\\GraphQL\\Lighthouse\\CategoryResolver@categories")
-  category(id: ID!): Category @field(resolver: "App\\GraphQL\\Lighthouse\\CategoryResolver@category")
+    categories: [Category!]! @all @orderBy(column: "name", order: ASC)
+    category(id: ID! @eq): Category @find
 }
