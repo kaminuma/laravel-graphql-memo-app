@@ -1,10 +1,13 @@
 extend type Query {
-  todos(
-    completed: Boolean
-    priority: Priority
-    deadline_status: String
-    sort_by: String
-    sort_direction: String
-    category_id: ID
-  ): [Todo!]! @field(resolver: "App\\GraphQL\\Lighthouse\\TodoResolver@todos")
-} 
+    todos(
+        completed: Boolean
+        priority: Priority
+        deadline_status: String
+        sort_by: String
+        sort_direction: String
+        category_id: ID
+    ): [Todo!]!
+        @all
+        @guard
+        @builder(method: "App\\Services\\TodoQueryBuilder@applyFilters")
+}
