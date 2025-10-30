@@ -18,8 +18,8 @@ class TodoQueryBuilder
         array $args,
         GraphQLContext $context,
         ResolveInfo $resolveInfo
-      ): Builder {
-         if (isset($args['deadline_status'])) {
+    ): Builder {
+        if (isset($args['deadline_status'])) {
             $now = now();
             switch ($args['deadline_status']) {
                 case 'overdue':
@@ -41,23 +41,26 @@ class TodoQueryBuilder
 
         // null でない場合のみフィルタを適用
         if (isset($args['priority']) && $args['priority'] !== null) {
-            $query->where('priority', $args['priority']);
+            $query->where('priority', strtolower($args['priority']));
         }
 
         // null でない場合のみフィルタを適用
         if (isset($args['category_id']) && $args['category_id'] !== null) {
             $query->where('category_id', $args['category_id']);
         }
+
         $sortBy = $args['sort_by'] ?? 'created_at';
         $sortDirection = $args['sort_direction'] ?? 'desc';
         $validSortFields = ['priority', 'deadline', 'created_at'];
         $validSortDirections = ['asc', 'desc'];
+
         if (!is_string($sortBy) || !in_array($sortBy, $validSortFields)) {
             $sortBy = 'created_at';
         }
         if (!is_string($sortDirection) || !in_array($sortDirection, $validSortDirections)) {
             $sortDirection = 'desc';
         }
+
         if ($sortBy === 'priority') {
             $query->orderByRaw("FIELD(priority, 'high', 'medium', 'low') " . ($sortDirection === 'asc' ? 'ASC' : 'DESC'));
         } else {
@@ -71,9 +74,11 @@ class TodoQueryBuilder
                 $query->orderBy($sortBy, $sortDirection);
             }
         }
+
         if ($sortBy !== 'created_at') {
             $query->orderBy('created_at', 'desc');
         }
+
         return $query;
     }
 }

@@ -9,5 +9,6 @@ extend type Query {
     ): [Todo!]!
         @all
         @guard
+        @whereAuth(relation: "user")
         @builder(method: "App\\Services\\TodoQueryBuilder@applyFilters")
 }
