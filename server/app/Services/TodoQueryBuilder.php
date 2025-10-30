@@ -8,10 +8,10 @@ use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
 class TodoQueryBuilder
 {
-       /**
-       * 複雑なフィルタリングとソート処理を適用
-       */
-      public function applyFilters(
+    /**
+     * 複雑なフィルタリングとソート処理を適用
+     */
+    public function applyFilters(
         Builder $query,
         $value,
         $root,
