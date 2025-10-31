@@ -10,67 +10,6 @@ use GraphQL\Error\Error;
 
 class TodoResolver
 {
-    // todosクエリ
-    public function todos($root, array $args)
-    {
-        $user = Auth::user();
-        if (!$user) {
-            return [];
-        }
-        $query = Todo::query()->where('user_id', $user->id);
-        if (isset($args['completed'])) {
-            $query->where('completed', $args['completed']);
-        }
-        if (isset($args['priority'])) {
-            $priority = strtolower($args['priority']);
-            $query->where('priority', $priority);
-        }
-        if (isset($args['category_id'])) {
-            $query->where('category_id', (int) $args['category_id']);
-        }
-        if (isset($args['deadline_status'])) {
-            $now = now();
-            switch ($args['deadline_status']) {
-                case 'overdue':
-                    $query->where('deadline', '<', $now)->where('completed', false);
-                    break;
-                case 'due_today':
-                    $query->whereDate('deadline', $now->toDateString())->where('completed', false);
-                    break;
-                case 'due_this_week':
-                    $query->whereBetween('deadline', [$now, $now->copy()->addWeek()])->where('completed', false);
-                    break;
-            }
-        }
-        $sortBy = $args['sort_by'] ?? 'created_at';
-        $sortDirection = $args['sort_direction'] ?? 'desc';
-        $validSortFields = ['priority', 'deadline', 'created_at'];
-        $validSortDirections = ['asc', 'desc'];
-        if (!is_string($sortBy) || !in_array($sortBy, $validSortFields)) {
-            $sortBy = 'created_at';
-        }
-        if (!is_string($sortDirection) || !in_array($sortDirection, $validSortDirections)) {
-            $sortDirection = 'desc';
-        }
-        if ($sortBy === 'priority') {
-            $query->orderByRaw("FIELD(priority, 'high', 'medium', 'low') " . ($sortDirection === 'asc' ? 'ASC' : 'DESC'));
-        } else {
-            if ($sortBy === 'deadline') {
-                if ($sortDirection === 'asc') {
-                    $query->orderByRaw('deadline IS NULL, deadline ASC');
-                } else {
-                    $query->orderByRaw('deadline IS NULL, deadline DESC');
-                }
-            } else {
-                $query->orderBy($sortBy, $sortDirection);
-            }
-        }
-        if ($sortBy !== 'created_at') {
-            $query->orderBy('created_at', 'desc');
-        }
-        return $query->get();
-    }
-
     // createTodoミューテーション
     public function createTodo($root, array $args)
     {
