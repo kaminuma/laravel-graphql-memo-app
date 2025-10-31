@@ -32,8 +32,8 @@ class RegisterMutation
             'password' => Hash::make($args['password']),
         ]);
 
-        // デバッグ用ログ
-        \Log::info('User registered: ' . $user->email);
+        // デバッグ用ログ: ユーザー登録完了
+        \Log::info('ユーザー登録完了: ' . $user->email);
 
         return $user;
     }
