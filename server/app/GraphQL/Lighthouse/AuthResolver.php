@@ -25,7 +25,7 @@ class AuthResolver
         $user = User::create([
             'name' => $args['name'],
             'email' => $args['email'],
-            'password' => Hash::make($args['password']),
+            'passwordfff' => Hash::make($args['password']),
         ]);
         Log::info('User registered: ' . $user->email);
         return $user;
