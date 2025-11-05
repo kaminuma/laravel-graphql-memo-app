@@ -72,6 +72,9 @@ frontend/dist/
 # docs
 docs
 
+# Generated specs
+specs/
+
 #AI
 .kiro
 .cursor
@@ -80,3 +83,13 @@ CLAUDE.md
 .claude
 
 tasks.json
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Generated specs
+specs/*.json
+specs/*.md
