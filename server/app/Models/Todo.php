@@ -34,19 +34,19 @@ class Todo extends Model
     }
 
     /**
-     * Check if the todo is overdue
+     * Todoが期限切れかチェックする
      */
     public function isOverdue(): bool
     {
         if (!$this->deadline || $this->completed) {
             return false;
         }
-        
+
         return $this->deadline->isPast();
     }
 
     /**
-     * Get the deadline status of the todo
+     * Todoの期限ステータスを取得する
      */
     public function getDeadlineStatus(): string
     {
@@ -91,7 +91,7 @@ class Todo extends Model
     }
 
     /**
-     * Scope: Filter by user
+     * スコープ: ユーザーでフィルタリング
      */
     public function scopeForUser($query, $userId)
     {
@@ -99,7 +99,7 @@ class Todo extends Model
     }
 
     /**
-     * Scope: Filter by completion status
+     * スコープ: 完了ステータスでフィルタリング
      */
     public function scopeCompleted($query, ?bool $completed = null)
     {
@@ -110,7 +110,7 @@ class Todo extends Model
     }
 
     /**
-     * Scope: Filter by priority
+     * スコープ: 優先度でフィルタリング
      */
     public function scopeByPriority($query, ?string $priority = null)
     {
