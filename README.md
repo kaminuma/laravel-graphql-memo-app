@@ -159,6 +159,55 @@ php artisan test
 
 ---
 
+## 📕 AI 仕様書自動生成システム
+
+このプロジェクトでは、AI を活用した仕様書の自動生成・更新の仕組みを構築しています。
+現在は GraphQL API 仕様書の生成に対応しており、今後はデータベース設計書やテストケースなど、様々な仕様書を自動生成する予定です。
+
+### 🎯 現在の機能（Phase 1.5）
+
+- **GraphQL API 仕様書の自動生成**: スキーマファイル（`.graphql`）を Gemini AI で解析
+- **階層構造での整理**: Query/Mutation/Type 別に分類された読みやすい構造
+- **Notion 連携**: 階層構造で Notion ワークスペースに自動アップロード
+
+### 🚀 使い方
+
+```bash
+# 1. Python仮想環境のセットアップ（初回のみ）
+cd scripts
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# 2. 環境変数設定（初回のみ）
+# .envファイルに以下を設定:
+# - GEMINI_API_KEY (Google AI Studio から取得)
+# - NOTION_TOKEN (Notion Integration から取得)
+# - NOTION_PARENT_PAGE_ID (Notion親ページID)
+
+# 3. 仕様書生成・アップロード
+python generate_spec_structured.py
+python upload_to_notion_structured.py
+```
+
+### 📊 生成される構造イメージ
+
+```
+仕様書📕
+├── 📊 Query仕様
+│   ├── todos, categories, user, todo, me
+├── ✏️ Mutation仕様
+│   ├── createTodo, updateTodo, deleteTodo
+│   ├── createCategory, updateCategory, deleteCategory
+│   └── login, logout, register
+└── 🧱 型定義
+    └── Todo, Category, User, Priority
+```
+
+詳細は [`scripts/README.md`](scripts/README.md) を参照してください。
+
+---
+
 ## 🔧 GraphQL Codegen 活用ガイド
 
 フロントエンドで GraphQL Code Generator を活用して型安全な開発を行います。
