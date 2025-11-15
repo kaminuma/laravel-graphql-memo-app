@@ -165,7 +165,7 @@ php artisan test
 
 ### セットアップ手順
 
-このリポジトリは、GraphQL Code Generator の設定ファイル（`codegen.yml`）や `package.json` のスクリプトがすでに含まれています。
+このリポジトリは、GraphQL Code Generator の設定ファイル（`frontend/codegen.ts`）や `package.json` のスクリプトがすでに含まれています。
 
 1. **依存パッケージのインストール**
 
@@ -177,8 +177,17 @@ npm install
 2. **コード生成の実行**
 
 ```bash
+# Dockerコンテナ内で実行（推奨）
+docker-compose exec frontend npm run codegen
+
+# または、ローカルで実行
+cd frontend
 npm run codegen
 ```
+
+> ⚠️ **注意点**
+> - バックエンド（Laravel）が起動している必要があります
+> - Docker環境では `http://backend:8000/graphql` をエンドポイントとして使用します
 
 3. **生成されたコードの利用例**
 
@@ -213,32 +222,58 @@ npm install @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/ty
 
 2. **設定ファイル作成例**
 
-```yaml
-# frontend/codegen.yml
-schema:
-  - "http://localhost:8000/graphql":
-      headers:
-        Accept: "application/json"
-documents:
-  - "./src/services/**/*.ts"
-  - "./src/graphql/**/*.graphql"
-generates:
-  src/generated/graphql.tsx:
-    plugins:
-      - "typescript"
-      - "typescript-operations"
-      - "typescript-react-apollo"
-    config:
-      withHooks: true
-      withComponent: false
-      withHOC: false
+> 💡 **TypeScript形式の設定ファイルのメリット**
+> - 型安全性: TypeScript の型チェックにより設定ミスを防止
+> - エディタサポート: 自動補完やインラインドキュメントが利用可能
+> - 柔軟性: プログラマティックな設定が可能
+
+```typescript
+// frontend/codegen.ts
+import type { CodegenConfig } from "@graphql-codegen/cli";
+
+const config: CodegenConfig = {
+  schema: {
+    "http://backend:8000/graphql": {
+      headers: {
+        Accept: "application/json",
+      },
+    },
+  },
+  documents: [
+    "./src/**/*.graphql",
+    "./src/services/**/*.ts",
+    "./src/features/**/graphql/**/*.graphql",
+  ],
+  generates: {
+    "src/generated/graphql.ts": {
+      plugins: [
+        "typescript",
+        "typescript-operations",
+        "typescript-react-apollo",
+      ],
+      config: {
+        withHooks: true,
+        withComponent: false,
+        withHOC: false,
+        skipTypename: false,
+        documentMode: "documentNode",
+        dedupeFragments: true,
+      },
+    },
+  },
+};
+
+export default config;
 ```
+
+> ⚡ Docker環境では `backend:8000` でGraphQLエンドポイントに接続します。
+> ローカル環境では `localhost:8000` に変更してください。
 
 3. **package.json にスクリプト追加例**
 
 ```json
 "scripts": {
-  "codegen": "graphql-codegen --config codegen.yml"
+  "codegen": "graphql-codegen --config codegen.ts"
 }
 ```
 
