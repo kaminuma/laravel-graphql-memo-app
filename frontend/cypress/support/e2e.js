@@ -1,20 +1,20 @@
 // ***********************************************************
-// This example support/e2e.js is processed and
-// loaded automatically before your test files.
+// このファイル (support/e2e.js) は、テストファイルより
+// 先に自動的に処理され読み込まれます。
 //
-// This is a great place to put global configuration and
-// behavior that modifies Cypress.
+// グローバル設定やCypressの動作を変更する処理を
+// ここに記述するのに適しています。
 //
-// You can change the location of this file or turn off
-// automatically serving support files with the
-// 'supportFile' configuration option.
+// このファイルの場所を変更したり、サポートファイルの
+// 自動読み込みを無効にするには 'supportFile' 設定
+// オプションを使用します。
 //
-// You can read more here:
+// 詳しくはこちらを参照してください:
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-// Import commands.js using ES2015 syntax:
+// commands.jsをES2015構文でインポート:
 import './commands'
 
-// Alternatively you can use CommonJS syntax:
+// または CommonJS構文も使用可能:
 // require('./commands') 

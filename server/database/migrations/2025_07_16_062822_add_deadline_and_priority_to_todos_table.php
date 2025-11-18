@@ -15,7 +15,7 @@ return new class extends Migration
             $table->dateTime('deadline')->nullable()->after('completed');
             $table->enum('priority', ['high', 'medium', 'low'])->default('medium')->after('deadline');
             
-            // Add indexes for performance optimization
+            // パフォーマンス最適化のためのインデックス追加
             $table->index('deadline');
             $table->index('priority');
             $table->index(['user_id', 'deadline']);

@@ -69,7 +69,7 @@ const TodoForm: React.FC<TodoFormProps> = ({
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
 
-  // Fetch categories
+  // カテゴリ一覧を取得
   const { data: categoriesData } = useGetCategoriesQuery();
   const categories = categoriesData?.categories || [];
 
@@ -77,7 +77,7 @@ const TodoForm: React.FC<TodoFormProps> = ({
     update(cache, { data }) {
       const newTodo = data?.createTodo;
       if (newTodo) {
-        // Read the current list of todos from the cache for the default query
+        // デフォルトクエリのキャッシュから現在のTODO一覧を読み込む
         const existingTodosData = cache.readQuery<GetTodosQuery>({
           query: GetTodosDocument,
           variables: {
@@ -91,7 +91,7 @@ const TodoForm: React.FC<TodoFormProps> = ({
         });
 
         if (existingTodosData && existingTodosData.todos) {
-          // Write the updated list back to the cache
+          // 更新されたリストをキャッシュに書き戻す
           cache.writeQuery<GetTodosQuery>({
             query: GetTodosDocument,
             variables: {

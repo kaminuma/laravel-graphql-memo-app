@@ -54,7 +54,7 @@ class Todo extends Model
             if (!$this->deadline || $this->completed) {
                 return 'normal';
             }
-            // Carbonインスタンスでなければnormal
+            // Carbonインスタンスでなければnormalを返す
             if (!($this->deadline instanceof \Carbon\Carbon)) {
                 return 'normal';
             }
@@ -122,8 +122,8 @@ class Todo extends Model
     }
 
     /**
-     * Scope: Filter by deadline status
-     * Implement deadline filtering logic
+     * スコープ: 期限ステータスでフィルタリング
+     * 期限フィルタリングロジックを実装
      */
     public function scopeByDeadlineStatus($query, ?string $status = null)
     {
@@ -148,11 +148,11 @@ class Todo extends Model
     }
 
     /**
-     * Scope: Apply sorting with proper null handling
+     * スコープ: NULLを適切に処理してソートを適用
      */
     public function scopeApplySorting($query, string $sortBy = 'created_at', string $sortDirection = 'desc')
     {
-        // Validate sort parameters
+        // ソートパラメータのバリデーション
         $validSortFields = ['priority', 'deadline', 'created_at'];
         $validSortDirections = ['asc', 'desc'];
 
@@ -163,11 +163,11 @@ class Todo extends Model
             $sortDirection = 'desc';
         }
 
-        // Special handling for priority sorting
+        // 優先度ソートの特別処理
         if ($sortBy === 'priority') {
             $query->orderByRaw("FIELD(priority, 'high', 'medium', 'low') " . ($sortDirection === 'asc' ? 'ASC' : 'DESC'));
         } elseif ($sortBy === 'deadline') {
-            // Handle null values for deadline sorting
+            // 期限ソート時のNULL値処理
             if ($sortDirection === 'asc') {
                 $query->orderByRaw('deadline IS NULL, deadline ASC');
             } else {
@@ -177,7 +177,7 @@ class Todo extends Model
             $query->orderBy($sortBy, $sortDirection);
         }
 
-        // Secondary sort for consistent ordering
+        // 一貫した順序のための二次ソート
         if ($sortBy !== 'created_at') {
             $query->orderBy('created_at', 'desc');
         }

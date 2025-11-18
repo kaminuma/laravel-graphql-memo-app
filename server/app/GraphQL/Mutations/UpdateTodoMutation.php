@@ -23,7 +23,7 @@ class UpdateTodoMutation
             $updateData['completed'] = $args['completed'];
         }
 
-        // Handle deadline update
+        // 期限の更新処理
         if (isset($args['deadline'])) {
             if (empty($args['deadline'])) {
                 $updateData['deadline'] = null;
@@ -36,7 +36,7 @@ class UpdateTodoMutation
             }
         }
 
-        // Handle priority update
+        // 優先度の更新処理
         if (isset($args['priority'])) {
             $priority = strtolower($args['priority']);
             if (!in_array($priority, ['high', 'medium', 'low'])) {
