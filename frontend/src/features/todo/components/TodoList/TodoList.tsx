@@ -56,7 +56,7 @@ const TodoList: React.FC = () => {
     direction: "desc",
   });
 
-  // Fetch categories
+  // カテゴリ一覧を取得
   const { data: categoriesData } = useGetCategoriesQuery();
   const categories = categoriesData?.categories || [];
 
