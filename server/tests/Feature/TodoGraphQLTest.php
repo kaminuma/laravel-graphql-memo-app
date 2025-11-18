@@ -54,7 +54,7 @@ class TodoGraphQLTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        // Create todo with HIGH priority and deadline
+        // 優先度と期限を指定してTODOを作成
         $createMutation = [
             'query' => 'mutation { 
                 createTodo(
@@ -74,14 +74,14 @@ class TodoGraphQLTest extends TestCase
 
         $todoId = $createRes['data']['createTodo']['id'];
 
-        // Query todos with priority filter
+        // 優先度フィルターでTODOをクエリ
         $queryWithPriority = [
             'query' => '{ todos(priority: HIGH) { id title priority deadline_status } }'
         ];
         $getRes = $this->postJson('/graphql', $queryWithPriority);
         $getRes->assertStatus(200)->assertJsonFragment(['title' => '緊急タスク']);
 
-        // Update priority to MEDIUM
+        // 優先度をMEDIUMに更新
         $updateMutation = [
             'query' => 'mutation { updateTodo(id: ' . $todoId . ', priority: MEDIUM) { id priority } }'
         ];
@@ -91,14 +91,14 @@ class TodoGraphQLTest extends TestCase
 
     public function test_authentication_required_for_todos()
     {
-        // Test without authentication
+        // 認証なしでテスト
         $query = [
             'query' => '{ todos { id title } }'
         ];
         $res = $this->postJson('/graphql', $query);
         
-        // Should return an authentication error
-        $res->assertStatus(200); // GraphQL errors still return 200
+        // 認証エラーが返されるべき
+        $res->assertStatus(200); // GraphQLエラーでも200を返す
         $this->assertStringContainsString('Unauthenticated', json_encode($res->json()));
     }
 } 

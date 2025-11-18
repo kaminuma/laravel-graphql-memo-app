@@ -97,7 +97,7 @@ class TodoTest extends TestCase
         Todo::factory()->create([
             'user_id' => $this->user->id,
             'deadline' => Carbon::now()->subDay(),
-            'completed' => true // Completed, so not overdue
+            'completed' => true // 完了済みなので期限切れにならない
         ]);
         Todo::factory()->create([
             'user_id' => $this->user->id,
@@ -111,7 +111,7 @@ class TodoTest extends TestCase
         $this->assertTrue($overdueTodos->first()->deadline->isPast());
         $this->assertFalse($overdueTodos->first()->completed);
 
-        Carbon::setTestNow(); // Reset
+        Carbon::setTestNow(); // リセット
     }
 
     /**
@@ -129,7 +129,7 @@ class TodoTest extends TestCase
         Todo::factory()->create([
             'user_id' => $this->user->id,
             'deadline' => Carbon::today(),
-            'completed' => true // Completed, so not included
+            'completed' => true // 完了済みなので含まれない
         ]);
         Todo::factory()->create([
             'user_id' => $this->user->id,
@@ -143,7 +143,7 @@ class TodoTest extends TestCase
         $this->assertTrue($todayTodos->first()->deadline->isToday());
         $this->assertFalse($todayTodos->first()->completed);
 
-        Carbon::setTestNow(); // Reset
+        Carbon::setTestNow(); // リセット
     }
 
     /**
@@ -161,12 +161,12 @@ class TodoTest extends TestCase
         Todo::factory()->create([
             'user_id' => $this->user->id,
             'deadline' => Carbon::now()->addDays(8),
-            'completed' => false // Outside 1-week window
+            'completed' => false // 1週間の範囲外
         ]);
         Todo::factory()->create([
             'user_id' => $this->user->id,
             'deadline' => Carbon::now()->addDays(3),
-            'completed' => true // Completed, so not included
+            'completed' => true // 完了済みなので含まれない
         ]);
 
         $weekTodos = Todo::forUser($this->user->id)->byDeadlineStatus('due_this_week')->get();
@@ -174,7 +174,7 @@ class TodoTest extends TestCase
         $this->assertCount(1, $weekTodos);
         $this->assertFalse($weekTodos->first()->completed);
 
-        Carbon::setTestNow(); // Reset
+        Carbon::setTestNow(); // リセット
     }
 
     /**
@@ -212,7 +212,7 @@ class TodoTest extends TestCase
 
         $todos = Todo::forUser($this->user->id)->applySorting('deadline', 'asc')->get();
 
-        // NULL deadlines should be last
+        // NULL期限は最後になるべき
         $this->assertNotNull($todos->first()->deadline);
         $this->assertNull($todos->last()->deadline);
     }
@@ -253,6 +253,6 @@ class TodoTest extends TestCase
         $this->assertEquals('HIGH', $todos->first()->priority);
         $this->assertTrue($todos->first()->deadline->isToday());
 
-        Carbon::setTestNow(); // Reset
+        Carbon::setTestNow(); // リセット
     }
 }

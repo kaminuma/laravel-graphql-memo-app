@@ -230,7 +230,7 @@ class TodosQueryTest extends TestCase
         Sanctum::actingAs($this->user);
         Carbon::setTestNow('2024-01-15 12:00:00');
         
-        // Create various todos
+        // 様々なTODOを作成
         Todo::factory()->create([
             'user_id' => $this->user->id,
             'priority' => 'high',
