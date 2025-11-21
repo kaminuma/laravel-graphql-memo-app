@@ -60,6 +60,17 @@ cp server/.env.example server/.env
 
 ※ 必要に応じて `.env` を編集してください。
 
+**フロントエンドの環境変数（オプション）:**
+
+Docker 環境ではデフォルト設定で動作しますが、ローカル開発時に API URL を変更する場合は以下を実行してください。
+
+```bash
+cp frontend/.env.example frontend/.env.local
+# frontend/.env.local を編集して REACT_APP_API_URL を設定
+```
+
+> 📖 詳細は「[API 接続先（REACT_APP_API_URL）の切り替え方法](#-api-接続先react_app_api_urlの切り替え方法)」セクションを参照してください。
+
 ### 📦 Docker コンテナの起動
 
 ```bash
@@ -102,6 +113,69 @@ docker-compose exec frontend npm install
 
 - 🔌 **バックエンド API**: [http://localhost:8000/graphql](http://localhost:8000/graphql)
 - 🖥️ **フロントエンド**: [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 🔄 API 接続先（REACT_APP_API_URL）の切り替え方法
+
+フロントエンドの GraphQL API 接続先は環境変数 `REACT_APP_API_URL` で設定できます。
+
+### Docker 環境で使用する場合（デフォルト）
+
+`docker-compose.yml` に設定されているため、特別な設定は不要です。
+
+```yaml
+# docker-compose.yml で自動的に設定されます
+environment:
+  - REACT_APP_API_URL=http://localhost:8000/graphql
+```
+
+### ローカル開発環境で API URL を変更する場合
+
+フロントエンドディレクトリに `.env.local` ファイルを作成して設定します。
+
+```bash
+# フロントエンドディレクトリに移動
+cd frontend
+
+# .env.example をコピー
+cp .env.example .env.local
+
+# .env.local を編集してAPI URLを設定
+# 例: REACT_APP_API_URL=http://localhost:8000/graphql
+```
+
+### 本番環境で使用する場合
+
+本番環境のビルド時に環境変数を設定するか、`.env.production` ファイルを作成します。
+
+```bash
+# frontend/.env.production
+REACT_APP_API_URL=https://your-production-domain.com/graphql
+```
+
+### package.json の scripts で API URL を指定する方法
+
+`package.json` の `scripts` セクションで直接指定することもできます。
+
+```json
+{
+  "scripts": {
+    "start": "REACT_APP_API_URL=http://localhost:8000/graphql react-scripts start",
+    "start:prod": "REACT_APP_API_URL=https://api.example.com/graphql react-scripts start"
+  }
+}
+```
+
+> - `.env.local` ファイルは `.gitignore` に含まれているため、リポジトリにコミットされません
+> - **Create React App での環境変数ファイルの優先順位**（高い順）:
+>   1. `.env.local` （ローカル開発用、Git 管理外）
+>   2. `.env.production.local`, `.env.development.local` （環境別ローカル設定）
+>   3. `.env.production`, `.env.development` （環境別設定）
+>   4. `.env` （全環境共通のデフォルト設定）
+> - **注意**: Docker 環境では `docker-compose.yml` の `environment` 設定が上記ファイルより優先されます
+> - React アプリでは `REACT_APP_` で始まる環境変数のみが使用できます
+> - 詳細は [Create React App のドキュメント](https://create-react-app.dev/docs/adding-custom-environment-variables/)を参照してください
 
 ---
 
@@ -235,8 +309,9 @@ npm run codegen
 ```
 
 > ⚠️ **注意点**
+>
 > - バックエンド（Laravel）が起動している必要があります
-> - Docker環境では `http://backend:8000/graphql` をエンドポイントとして使用します
+> - Docker 環境では `http://backend:8000/graphql` をエンドポイントとして使用します
 
 3. **生成されたコードの利用例**
 
@@ -271,7 +346,8 @@ npm install @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/ty
 
 2. **設定ファイル作成例**
 
-> 💡 **TypeScript形式の設定ファイルのメリット**
+> 💡 **TypeScript 形式の設定ファイルのメリット**
+>
 > - 型安全性: TypeScript の型チェックにより設定ミスを防止
 > - エディタサポート: 自動補完やインラインドキュメントが利用可能
 > - 柔軟性: プログラマティックな設定が可能
@@ -315,7 +391,7 @@ const config: CodegenConfig = {
 export default config;
 ```
 
-> ⚡ Docker環境では `backend:8000` でGraphQLエンドポイントに接続します。
+> ⚡ Docker 環境では `backend:8000` で GraphQL エンドポイントに接続します。
 > ローカル環境では `localhost:8000` に変更してください。
 
 3. **package.json にスクリプト追加例**
