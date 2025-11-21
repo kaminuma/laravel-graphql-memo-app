@@ -167,14 +167,13 @@ REACT_APP_API_URL=https://your-production-domain.com/graphql
 }
 ```
 
-> 💡 **ヒント**
 > - `.env.local` ファイルは `.gitignore` に含まれているため、リポジトリにコミットされません
 > - **Create React App での環境変数ファイルの優先順位**（高い順）:
->   1. `.env.local` （ローカル開発用、Git管理外）
+>   1. `.env.local` （ローカル開発用、Git 管理外）
 >   2. `.env.production.local`, `.env.development.local` （環境別ローカル設定）
 >   3. `.env.production`, `.env.development` （環境別設定）
 >   4. `.env` （全環境共通のデフォルト設定）
-> - **注意**: Docker環境では `docker-compose.yml` の `environment` 設定が上記ファイルより優先されます
+> - **注意**: Docker 環境では `docker-compose.yml` の `environment` 設定が上記ファイルより優先されます
 > - React アプリでは `REACT_APP_` で始まる環境変数のみが使用できます
 > - 詳細は [Create React App のドキュメント](https://create-react-app.dev/docs/adding-custom-environment-variables/)を参照してください
 
@@ -310,8 +309,9 @@ npm run codegen
 ```
 
 > ⚠️ **注意点**
+>
 > - バックエンド（Laravel）が起動している必要があります
-> - Docker環境では `http://backend:8000/graphql` をエンドポイントとして使用します
+> - Docker 環境では `http://backend:8000/graphql` をエンドポイントとして使用します
 
 3. **生成されたコードの利用例**
 
@@ -346,7 +346,8 @@ npm install @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/ty
 
 2. **設定ファイル作成例**
 
-> 💡 **TypeScript形式の設定ファイルのメリット**
+> 💡 **TypeScript 形式の設定ファイルのメリット**
+>
 > - 型安全性: TypeScript の型チェックにより設定ミスを防止
 > - エディタサポート: 自動補完やインラインドキュメントが利用可能
 > - 柔軟性: プログラマティックな設定が可能
@@ -390,7 +391,7 @@ const config: CodegenConfig = {
 export default config;
 ```
 
-> ⚡ Docker環境では `backend:8000` でGraphQLエンドポイントに接続します。
+> ⚡ Docker 環境では `backend:8000` で GraphQL エンドポイントに接続します。
 > ローカル環境では `localhost:8000` に変更してください。
 
 3. **package.json にスクリプト追加例**
