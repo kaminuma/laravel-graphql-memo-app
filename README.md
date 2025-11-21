@@ -169,8 +169,14 @@ REACT_APP_API_URL=https://your-production-domain.com/graphql
 
 > 💡 **ヒント**
 > - `.env.local` ファイルは `.gitignore` に含まれているため、リポジトリにコミットされません
-> - 環境変数の優先順位: `.env.local` > `.env` > `docker-compose.yml` の environment
+> - 環境変数ファイルの優先順位（高い順）:
+>   1. `.env.local` （ローカル開発用、Git管理外）
+>   2. `.env.production.local`, `.env.development.local` （環境別ローカル設定）
+>   3. `.env.production`, `.env.development` （環境別設定）
+>   4. `.env` （全環境共通のデフォルト設定）
+>   5. `docker-compose.yml` の environment（Docker環境の場合）
 > - React アプリでは `REACT_APP_` で始まる環境変数のみが使用できます
+> - 詳細は [Create React App のドキュメント](https://create-react-app.dev/docs/adding-custom-environment-variables/)を参照してください
 
 ---
 
